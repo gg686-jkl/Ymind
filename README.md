@@ -1,6 +1,6 @@
 # Ymind
 
-> Everything in one HTML file: notes, AI brainstorming, local-first. No accounts, no cloud, no catches. Decentralized means you own your data wherever you go. AI that's always there to think with you. Ymind is Your Mind.
+> Everything in one HTML file: notes, AI brainstorming, local-first. No accounts, no cloud, no catches. Decentralized and P2P means you own your data wherever you go. AI that's always there to think with you. Ymind is Your Mind.
 
 ## Demo
 
