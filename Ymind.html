@@ -246,7 +246,7 @@
         header {
             display: flex;
             align-items: center;
-            padding: 8px 16px;
+            padding: 8px 12px;
             border-bottom: 1px solid var(--border-color);
             gap: 12px;
             flex-shrink: 0;
@@ -275,8 +275,8 @@
         .sidebar-top-actions {
             display: flex;
             align-items: center;
-            padding: 8px 12px;
-            gap: 8px;
+            padding: 8px 16px;
+            height: 48px;
             border-bottom: 1px solid var(--border-color);
             flex-shrink: 0;
         }
@@ -303,9 +303,9 @@
         }
 
         #new-note-btn, #new-folder-btn, #select-btn {
-            width: 40px !important;
-            height: 32px !important;
-            flex: none !important;
+            width: 40px;
+            height: 32px;
+            flex: none;
             padding: 0;
             justify-content: center;
         }
@@ -462,7 +462,7 @@
 
         #batch-bar {
             display: none;
-            padding: 10px 12px;
+            padding: 10px 16px;
             border-top: 1px solid var(--border-color);
             background: var(--bg-primary);
             gap: 8px;
@@ -530,7 +530,8 @@
         .editor-header {
             display: flex;
             align-items: center;
-            padding: 8px 12px;
+            padding: 8px 16px;
+            height: 48px;
             border-bottom: 1px solid var(--border-color);
             gap: 8px;
             flex-shrink: 0;
@@ -905,6 +906,199 @@
             color: #ef4444;
         }
 
+        /* ========== Settings Popover ========== */
+        #settings-popover {
+            position: fixed;
+            top: 52px;
+            right: 16px;
+            width: 320px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            z-index: 200;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .settings-section {
+            border-bottom: 1px solid var(--border-color);
+        }
+        .settings-section:last-child {
+            border-bottom: none;
+        }
+
+        .settings-section-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            text-align: left;
+        }
+        .settings-section-header:hover {
+            background: var(--bg-secondary);
+        }
+        .settings-section-arrow {
+            font-size: 0.75rem;
+            transition: transform 0.2s;
+            color: var(--text-secondary);
+        }
+        .settings-section.open .settings-section-arrow {
+            transform: rotate(180deg);
+        }
+        .settings-section-body {
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+        }
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .settings-row:last-child {
+            margin-bottom: 0;
+        }
+        .settings-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .settings-shortcut-input {
+            width: 120px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-family: monospace;
+            text-align: center;
+            cursor: pointer;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+        }
+        .settings-shortcut-input:hover {
+            border-color: var(--accent-primary);
+        }
+        .settings-shortcut-input.listening {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--ring-color);
+            animation: pulse-border 1s infinite;
+        }
+        @keyframes pulse-border {
+            0%, 100% { box-shadow: 0 0 0 2px var(--ring-color); }
+            50% { box-shadow: 0 0 0 3px var(--ring-color); }
+        }
+        .settings-text-input {
+            width: 120px;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+        }
+        .settings-textarea {
+            width: 100%;
+            padding: 8px;
+            font-size: 0.8rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            resize: none;
+            font-family: inherit;
+            min-height: 60px;
+            max-height: 300px;
+        }
+
+        /* ========== Preprompt Bubble ========== */
+        .preprompt-bubble-wrapper {
+            position: fixed;
+            top: 60px;
+            right: 30px;
+            width: 420px;
+            min-width: 300px;
+            min-height: 250px;
+            max-height: 70vh;
+            z-index: 250;
+            overflow: visible;
+            user-select: none;
+        }
+        .preprompt-bubble-wrapper.hidden {
+            display: none;
+        }
+        .preprompt-bubble-wrapper.dragging,
+        .preprompt-bubble-wrapper.resizing {
+            transition: none;
+            opacity: 0.95;
+        }
+        .preprompt-bubble-inner {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        [data-theme="light"] .preprompt-bubble-inner {
+            background: rgba(255, 255, 255, 0.92);
+        }
+        [data-theme="dark"] .preprompt-bubble-inner {
+            background: rgba(23, 23, 23, 0.94);
+        }
+        .preprompt-bubble-wrapper.resizing .preprompt-bubble-inner {
+            opacity: 0.95;
+            transition: none;
+        }
+        .preprompt-bubble-body {
+            flex: 1;
+            overflow: hidden;
+            padding: 14px;
+        }
+        .preprompt-bubble-textarea {
+            width: 100%;
+            height: 100%;
+            min-height: 100px;
+            padding: 10px;
+            font-size: 0.85rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            resize: none;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+        .preprompt-bubble-textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 1px var(--accent-primary);
+        }
+        .settings-hint {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        .settings-confirm-row {
+            padding: 10px 16px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         /* ========== Toast ========== */
         #toast {
             position: fixed;
@@ -1098,6 +1292,9 @@
             cursor: pointer;
             border-radius: 4px;
             min-width: auto;
+            position: relative;
+            z-index: 100;
+            pointer-events: auto;
         }
 
         .bubble-close:hover {
@@ -1282,9 +1479,9 @@
 
             #note-editor-container.active { transform: translateX(0); }
 
-            .editor-header { padding-left: 8px; }
+            .editor-header { padding-left: 16px; }
 
-            #back-btn { display: flex !important; }
+            #back-btn { display: flex; }
 
             #search-input { width: 140px; }
 
@@ -1293,10 +1490,48 @@
                 bottom: 20px;
             }
         }
+
+        /* Connection Status Indicator */
+        .connection-status {
+            position: fixed;
+            top: 8px;
+            right: 16px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: rgba(0,0,0,0.75);
+            border-radius: 16px;
+            font-size: 12px;
+            color: #fff;
+            transition: opacity 0.3s;
+        }
+        .connection-status.hidden { display: none; }
+        .connection-status.connecting { opacity: 0.8; }
+        #connection-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #888;
+        }
+        .connection-status.connected #connection-dot { background: #4caf50; }
+        .connection-status.disconnected #connection-dot { background: #f44336; }
+        .connection-status.reconnecting #connection-dot { background: #ff9800; animation: pulse 1s infinite; }
+        .connection-status.syncing #connection-dot { background: #2196f3; animation: pulse 0.5s infinite; }
+        .connection-status.failed #connection-dot { background: #f44336; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
     </style>
 </head>
 
 <body>
+    <!-- ========== CONNECTION STATUS ========== -->
+    <div id="connection-status" class="connection-status hidden" title="P2P连接状态">
+        <span id="connection-dot"></span>
+        <span id="connection-text"></span>
+    </div>
+
     <!-- ========== INITIAL LOADER ========== -->
     <div id="initial-loader" class="loader"></div>
 
@@ -1307,11 +1542,11 @@
             <p>Brainstorm notes powered by GenosDB.</p>
             <textarea id="mnemonic-area" placeholder="Enter your 12-word mnemonic phrase to login or recover..." spellcheck="false"></textarea>
             <div id="auth-actions" class="auth-actions">
-                <button id="generate-btn" class="primary"><i class="ph-bold ph-plus"></i> Generate New Identity</button>
-                <button id="login-mnemonic-btn" class="secondary">Login with Mnemonic</button>
-                <button id="login-passkey-btn" class="secondary hidden">Login with Passkey</button>
-                <button id="copy-phrase-btn" class="secondary hidden"><i class="ph-bold ph-copy"></i> Copy Phrase</button>
-                <button id="protect-passkey-btn" class="hidden">Protect with Passkey</button>
+                <button type="button" id="generate-btn" class="primary"><i class="ph-bold ph-plus"></i> Generate New Identity</button>
+                <button type="button" id="login-mnemonic-btn" class="secondary">Login with Mnemonic</button>
+                <button type="button" id="login-passkey-btn" class="secondary hidden">Login with Passkey</button>
+                <button type="button" id="copy-phrase-btn" class="secondary hidden"><i class="ph-bold ph-copy"></i> Copy Phrase</button>
+                <button type="button" id="protect-passkey-btn" class="hidden">Protect with Passkey</button>
             </div>
             <p id="auth-warning" class="hidden">SAVE THIS PHRASE! This is your only way to recover your account.</p>
         </div>
@@ -1324,27 +1559,29 @@
             <span id="sidebar-user-id" class="sidebar-user-id">ID: ...</span>
             <div style="flex:1;"></div>
             <input type="search" id="search-input" placeholder="Search notes...">
-            <button id="theme-toggle-btn" class="icon-btn" title="Toggle theme"><i class="ph-bold ph-moon"></i></button>
-            <button id="logout-btn" class="icon-btn" title="Logout"><i class="ph-bold ph-sign-out"></i></button>
+            <button type="button" id="theme-toggle-btn" class="icon-btn" title="Toggle theme"><i class="ph-bold ph-moon"></i></button>
+            <button type="button" id="settings-btn" class="icon-btn" title="Settings"><i class="ph-bold ph-gear"></i></button>
+            <button type="button" id="logout-btn" class="icon-btn" title="Logout"><i class="ph-bold ph-sign-out"></i></button>
         </header>
         <main>
             <div id="notes-list-container">
                 <div class="sidebar-top-actions">
-                    <button id="new-note-btn" class="primary" title="New Note"><i class="ph-bold ph-plus"></i></button>
-                    <button id="new-folder-btn" class="secondary" title="New Folder"><i class="ph-bold ph-folder"></i></button>
-                    <button id="select-btn" class="secondary" title="Batch Select"><i class="ph-bold ph-list"></i></button>
+                    <button type="button" id="new-note-btn" class="primary" title="New Note"><i class="ph-bold ph-plus"></i></button>
+                    <button type="button" id="new-folder-btn" class="secondary" title="New Folder"><i class="ph-bold ph-folder"></i></button>
+                    <button type="button" id="select-btn" class="secondary" title="Batch Select"><i class="ph-bold ph-list"></i></button>
                 </div>
                 <div id="notes-list"></div>
                 <div id="batch-bar">
                     <span id="batch-count" class="batch-count"></span>
-                    <button id="batch-delete-btn" class="icon-btn destructive" title="Delete selected"><i class="ph-bold ph-trash"></i></button>
-                    <button id="batch-export-btn" class="icon-btn secondary" title="Export selected"><i class="ph-bold ph-download-simple"></i></button>
-                    <button id="batch-share-btn" class="icon-btn secondary" title="Share selected"><i class="ph-bold ph-share-network"></i></button>
+                    <button type="button" id="batch-delete-btn" class="icon-btn destructive" title="Delete selected"><i class="ph-bold ph-trash"></i></button>
+                    <button type="button" id="batch-export-btn" class="icon-btn secondary" title="Export selected"><i class="ph-bold ph-download-simple"></i></button>
+                    <button type="button" id="batch-share-btn" class="icon-btn secondary" title="Share selected"><i class="ph-bold ph-share-network"></i></button>
                 </div>
             </div>
             <div id="note-editor-container">
                 <div id="editor-placeholder">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <title>Edit note icon</title>
                         <path d="M12 20h9"></path>
                         <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                     </svg>
@@ -1352,12 +1589,14 @@
                 </div>
                 <div id="note-editor" class="hidden">
                     <div class="editor-header">
-                        <button id="sidebar-toggle-btn" class="icon-btn" title="Toggle Sidebar"><i class="ph-bold ph-sidebar-simple"></i></button>
-                        <button id="back-btn" class="icon-btn hidden" title="Back"><i class="ph-bold ph-arrow-left"></i></button>
+                        <button type="button" id="sidebar-toggle-btn" class="icon-btn" title="Toggle Sidebar"><i class="ph-bold ph-sidebar-simple"></i></button>
+                        <button type="button" id="back-btn" class="icon-btn hidden" title="Back"><i class="ph-bold ph-arrow-left"></i></button>
                         <input type="text" id="note-title-input" placeholder="Note Title">
                         <div class="ai-history-dropdown" id="ai-history-dropdown">
-                            <button id="ai-history-btn" class="icon-btn"><i class="ph-bold ph-brain"></i> Chat History</button>
-                            <div class="ai-history-menu hidden" id="ai-history-menu"></div>
+                            <button type="button" id="ai-history-btn" class="icon-btn"><i class="ph-bold ph-brain"></i> Chat History</button>
+                            <div class="ai-history-menu hidden" id="ai-history-menu">
+                                <div class="ai-history-content" id="ai-history-content"></div>
+                            </div>
                         </div>
                         <div class="model-selector" id="model-selector">
                             <button class="model-selector-btn" id="model-selector-btn" type="button">
@@ -1433,14 +1672,13 @@
                                         <div class="model-item" data-model="mistral-small-latest"><span class="model-name">mistral-small</span><span class="dot"></span></div>
                                         <div class="model-item" data-model="mistral-medium-latest"><span class="model-name">mistral-medium</span><span class="dot"></span></div>
                                         <div class="model-item" data-model="mistral-large-latest"><span class="model-name">mistral-large</span><span class="dot"></span></div>
-                                    </div>
-                                </div>
-                            </div>
+            </div>
+        </div>
+    </div>
                         </div>
-                        <button id="preview-btn" class="secondary"><i class="ph-bold ph-eye"></i> Preview</button>
-                        <button id="share-btn" class="secondary"><i class="ph-bold ph-share-network"></i> Share</button>
-                        <button id="output-btn" class="secondary"><i class="ph-bold ph-download-simple"></i> Output</button>
-                        <button id="delete-btn" class="destructive"><i class="ph-bold ph-trash"></i> Delete</button>
+                        <button type="button" id="preview-btn" class="secondary"><i class="ph-bold ph-eye"></i> Preview</button>
+
+                        <button type="button" id="delete-btn" class="destructive"><i class="ph-bold ph-trash"></i> Delete</button>
                     </div>
                     <div id="note-editor-content" style="display:flex;flex:1;overflow:hidden;">
                         <textarea id="note-content-input" placeholder="Start writing... Supports Markdown.&#10;&#10;Tip: Type your question, then press Enter twice to brainstorm with AI."></textarea>
@@ -1452,6 +1690,91 @@
         </main>
     </section>
 
+    <!-- ========== SETTINGS POPOVER ========== -->
+    <div id="settings-popover" class="settings-popover hidden">
+        <div class="settings-section" data-section="shortcuts">
+            <button type="button" class="settings-section-header">
+                <span>Keyboard Shortcuts</span>
+                <i class="ph-bold ph-caret-down settings-section-arrow"></i>
+            </button>
+            <div class="settings-section-body hidden">
+                <div class="settings-row">
+                    <span class="settings-label">Brainstorm (double press)</span>
+                    <input type="text" class="settings-shortcut-input" data-action="brainstormDoubleEnter" readonly placeholder="Enter×2">
+                </div>
+                <div class="settings-row">
+                    <span class="settings-label">Brainstorm (region)</span>
+                    <input type="text" class="settings-shortcut-input" data-action="brainstormCtrlEnter" readonly placeholder="Ctrl+Enter">
+                </div>
+                <div class="settings-row">
+                    <span class="settings-label">Chat History</span>
+                    <input type="text" class="settings-shortcut-input" data-action="openAiHistory" readonly placeholder="Ctrl+S">
+                </div>
+                <div class="settings-row">
+                    <span class="settings-label">Exit Batch Mode</span>
+                    <input type="text" class="settings-shortcut-input" data-action="exitBatchMode" readonly placeholder="Escape">
+                </div>
+                <div class="settings-row">
+                    <span class="settings-label">Previous AI Response</span>
+                    <input type="text" class="settings-shortcut-input" data-action="navigateAiPrev" readonly placeholder="ArrowLeft">
+                </div>
+                <div class="settings-row">
+                    <span class="settings-label">Next AI Response</span>
+                    <input type="text" class="settings-shortcut-input" data-action="navigateAiNext" readonly placeholder="ArrowRight">
+                </div>
+            </div>
+        </div>
+        <div class="settings-section" data-section="separator">
+            <button type="button" class="settings-section-header">
+                <span>Custom Separator</span>
+                <i class="ph-bold ph-caret-down settings-section-arrow"></i>
+            </button>
+            <div class="settings-section-body hidden">
+                <div class="settings-row">
+                    <span class="settings-label">Separator character</span>
+                    <input type="text" id="settings-separator-input" class="settings-text-input" maxlength="10" placeholder="? (default)">
+                </div>
+                <p class="settings-hint">Used to mark where your question starts. Default: ?</p>
+            </div>
+        </div>
+        <div class="settings-section" data-section="preprompt">
+            <button type="button" class="settings-section-header">
+                <span>Pre-prompt Prefix</span>
+            </button>
+            <div class="settings-section-body hidden">
+            </div>
+        </div>
+        <div class="settings-confirm-row">
+            <button type="button" id="settings-cancel-btn" class="icon-btn" title="Cancel"><i class="ph-bold ph-x"></i></button>
+            <button type="button" id="settings-confirm-btn" class="primary" title="Apply" style="padding:8px 14px; min-width:38px; min-height:38px; font-size:0.95rem;"><i class="ph-bold ph-check" style="margin:0;"></i></button>
+        </div>
+    </div>
+
+    <!-- ========== PREPROMPT EDIT BUBBLE ========== -->
+    <div id="preprompt-bubble-wrapper" class="preprompt-bubble-wrapper hidden">
+        <div id="preprompt-bubble-inner" class="preprompt-bubble-inner">
+            <div class="bubble-header" id="preprompt-bubble-header">
+                <span class="bubble-title"><i class="ph-bold ph-textbox"></i> Pre-prompt</span>
+            </div>
+            <div class="preprompt-bubble-body">
+                <textarea id="preprompt-bubble-textarea" class="preprompt-bubble-textarea" placeholder="You are a helpful assistant..."></textarea>
+            </div>
+            <div class="bubble-actions">
+                <button type="button" id="preprompt-bubble-cancel" class="secondary">Cancel</button>
+                <button type="button" id="preprompt-bubble-confirm" class="primary"><i class="ph-bold ph-check"></i> Confirm</button>
+            </div>
+        </div>
+        <!-- Resize handles (4 edges + 4 corners) -->
+        <div class="resize-handle resize-edge-top" data-dir="n"></div>
+        <div class="resize-handle resize-edge-bottom" data-dir="s"></div>
+        <div class="resize-handle resize-edge-left" data-dir="w"></div>
+        <div class="resize-handle resize-edge-right" data-dir="e"></div>
+        <div class="resize-handle resize-corner resize-corner-tl" data-dir="nw"></div>
+        <div class="resize-handle resize-corner resize-corner-tr" data-dir="ne"></div>
+        <div class="resize-handle resize-corner resize-corner-bl" data-dir="sw"></div>
+        <div class="resize-handle resize-corner resize-corner-br" data-dir="se"></div>
+    </div>
+
     <!-- ========== BRAINSTORM BUBBLE ========== -->
     <div class="bubble-resize-wrapper hidden" id="bubble-resize-wrapper">
         <div id="brainstorm-bubble">
@@ -1459,21 +1782,21 @@
                 <span class="bubble-title"><i class="ph-bold ph-brain"></i> AI Response</span>
                 <div class="bubble-header-actions">
                     <div class="bubble-view-toggle">
-                        <button id="bubble-preview-btn" class="bubble-view-btn active"><i class="ph-bold ph-eye"></i></button>
-                        <button id="bubble-raw-btn" class="bubble-view-btn"><i class="ph-bold ph-code"></i></button>
+                        <button type="button" id="bubble-preview-btn" class="bubble-view-btn active"><i class="ph-bold ph-eye"></i></button>
+                        <button type="button" id="bubble-raw-btn" class="bubble-view-btn"><i class="ph-bold ph-code"></i></button>
                     </div>
-                    <button class="bubble-close" id="bubble-close-btn" title="Close"><i class="ph-bold ph-x"></i></button>
+                    <button type="button" class="bubble-close" id="bubble-close-btn" title="Close"><i class="ph-bold ph-x"></i></button>
                 </div>
             </div>
             <div class="bubble-content" id="bubble-content"></div>
             <div class="bubble-actions">
                 <small id="bubble-hint">Select text to copy</small>
                 <div class="bubble-navigation">
-                    <button id="bubble-prev-btn" class="icon-btn" title="Previous (←)" style="padding:4px 6px;"><i class="ph-bold ph-arrow-left"></i></button>
+                    <button type="button" id="bubble-prev-btn" class="icon-btn" title="Previous (←)" style="padding:4px 6px;"><i class="ph-bold ph-arrow-left"></i></button>
                     <span id="bubble-nav-indicator">1 / 3</span>
-                    <button id="bubble-next-btn" class="icon-btn" title="Next (→)" style="padding:4px 6px;"><i class="ph-bold ph-arrow-right"></i></button>
+                    <button type="button" id="bubble-next-btn" class="icon-btn" title="Next (→)" style="padding:4px 6px;"><i class="ph-bold ph-arrow-right"></i></button>
                 </div>
-                <button id="bubble-copy-btn" class="secondary"><i class="ph-bold ph-copy"></i> Copy</button>
+                <button type="button" id="bubble-copy-btn" class="secondary"><i class="ph-bold ph-copy"></i> Copy</button>
             </div>
         </div>
         <!-- Resize handles (4 edges + 4 corners) -->
@@ -1500,14 +1823,14 @@
                     <option value="read">Read-Only</option>
                     <option value="write">Read & Write</option>
                 </select>
-                <button id="add-collaborator-btn" class="primary">Add</button>
+                <button type="button" id="add-collaborator-btn" class="primary">Add</button>
             </div>
             <div id="collaborators-list">
                 <h3>Collaborators</h3>
                 <div id="collaborators-container"></div>
             </div>
             <div class="modal-actions">
-                <button id="close-modal-btn" class="secondary"><i class="ph-bold ph-x"></i> Close</button>
+                <button type="button" id="close-modal-btn" class="secondary"><i class="ph-bold ph-x"></i> Close</button>
             </div>
         </div>
     </div>
@@ -1518,8 +1841,8 @@
             <h2>Delete Note?</h2>
             <p style="color: var(--text-secondary); margin-bottom: 8px; font-size: 0.9rem;">This action cannot be undone.</p>
             <div class="modal-actions">
-                <button id="confirm-cancel-btn" class="secondary">Cancel</button>
-                <button id="confirm-delete-btn" class="destructive">Delete</button>
+                <button type="button" id="confirm-cancel-btn" class="secondary">Cancel</button>
+                <button type="button" id="confirm-delete-btn" class="destructive">Delete</button>
             </div>
         </div>
     </div>
@@ -1530,8 +1853,8 @@
             <h2>Create Folder</h2>
             <input type="text" id="folder-name-input" placeholder="Folder name" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem;">
             <div class="modal-actions">
-                <button id="cancel-folder-btn" class="secondary">Cancel</button>
-                <button id="create-folder-submit-btn" class="primary">Create</button>
+                <button type="button" id="cancel-folder-btn" class="secondary">Cancel</button>
+                <button type="button" id="create-folder-submit-btn" class="primary">Create</button>
             </div>
         </div>
     </div>
@@ -1542,8 +1865,296 @@
         import { gdb } from "https://cdn.jsdelivr.net/npm/genosdb@latest/dist/index.min.js";
 
         // Brainstorm config - Worker URL
-        // TODO: Replace with your Vercel deployment URL and token
-        const BRAINSTORM_WORKER_URL = '';
+        // TODO: Replace with your own ymind-worker URL and token
+        const BRAINSTORM_WORKER_URL = 'https://your-worker.vercel.app/api/chat?key=YOUR_TOKEN';
+
+        /* ========== Helper Utilities ========== */
+        function on(el, event, handler, options) {
+            el.addEventListener(event, handler, options);
+        }
+
+        function closeOnClickOutside(popover, trigger, onClose) {
+            const handler = (e) => {
+                if (!popover.contains(e.target) &&
+                    (!trigger || (e.target !== trigger && !trigger.contains(e.target)))) {
+                    if (onClose) onClose();
+                    else popover.classList.add('hidden');
+                }
+            };
+            document.addEventListener('click', handler);
+            return { remove: () => document.removeEventListener('click', handler) };
+        }
+
+        function getJsonItem(key, defaultValue) {
+            try {
+                const v = localStorage.getItem(key);
+                return v ? JSON.parse(v) : defaultValue;
+            } catch { return defaultValue; }
+        }
+
+        function setJsonItem(key, value) {
+            try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+        }
+
+        /** Derive a deterministic room name from a mnemonic phrase using PBKDF2 */
+async function deriveRoomName(mnemonic) {
+    const salt = 'xK9mP2vL3nQ7rT5wY8zA1bC4dE6fH0iJ';
+            const enc = new TextEncoder();
+            const key = await crypto.subtle.importKey('raw', enc.encode(mnemonic), 'PBKDF2', false, ['deriveBits']);
+            const bits = await crypto.subtle.deriveBits(
+                { name: 'PBKDF2', salt: enc.encode(salt), iterations: 100000, hash: 'SHA-256' },
+                key, 256
+            );
+            const base64 = btoa(String.fromCharCode(...new Uint8Array(bits)));
+            return 'ymind-' + base64.replace(/[^a-zA-Z0-9]/g, '').slice(0, 32);
+        }
+
+        /** Derive E2EE password from mnemonic using a different salt than room name */
+        async function deriveE2EEPassword(mnemonic) {
+            const salt = 'qR3sT6uV9wX0yZ1aB2cD4eF5gH6iJ7k';
+            const enc = new TextEncoder();
+            const key = await crypto.subtle.importKey('raw', enc.encode(mnemonic), 'PBKDF2', false, ['deriveBits']);
+            const bits = await crypto.subtle.deriveBits(
+                { name: 'PBKDF2', salt: enc.encode(salt), iterations: 200000, hash: 'SHA-256' },
+                key, 512
+            );
+            return btoa(String.fromCharCode(...new Uint8Array(bits))).replace(/[^a-zA-Z0-9]/g, '');
+        }
+
+        /** Derive E2EE password deterministically from mnemonic (no prompt) */
+        async function getOrCreateE2EEPassword() {
+            const mnemonic = localStorage.getItem('ymind_mnemonic');
+            if (!mnemonic) return '';
+            const storedKey = 'ymind_e2ee_derived';
+            let password = localStorage.getItem(storedKey);
+            if (!password) {
+                password = await deriveE2EEPassword(mnemonic);
+                localStorage.setItem(storedKey, password);
+            }
+            return password;
+        }
+
+        /* ========== Drag & Resize Factory ========== */
+        function makeDragResizable(wrapper, header, storageKey, opts) {
+            opts = opts || {};
+            const minW = opts.minW || 300;
+            const minH = opts.minH || 200;
+
+            let isDragging = false;
+            let isResizing = false;
+            let resizeDir = null;
+            let dragStartX, dragStartY;
+            let startLeft, startTop;
+            let startWidth, startHeight;
+
+            function initPosition() {
+                if (wrapper.style.left && wrapper.style.left !== 'auto') return;
+                const rect = wrapper.getBoundingClientRect();
+                wrapper.style.left = rect.left + 'px';
+                wrapper.style.top = rect.top + 'px';
+                wrapper.style.width = rect.width + 'px';
+                wrapper.style.height = rect.height + 'px';
+                if (opts.onInit) opts.onInit(wrapper);
+            }
+
+            function clampPosition() {
+                const rect = wrapper.getBoundingClientRect();
+                const maxX = window.innerWidth - 20;
+                const maxY = window.innerHeight - 20;
+                let left = parseFloat(wrapper.style.left) || rect.left;
+                let top = parseFloat(wrapper.style.top) || rect.top;
+                if (left < 0) left = 0;
+                if (top < 0) top = 0;
+                if (left + rect.width > maxX) left = maxX - rect.width;
+                if (top + rect.height > maxY) top = maxY - rect.height;
+                wrapper.style.left = left + 'px';
+                wrapper.style.top = top + 'px';
+            }
+
+            function saveState() {
+                const state = {
+                    left: parseFloat(wrapper.style.left) || 0,
+                    top: parseFloat(wrapper.style.top) || 0,
+                    width: parseFloat(wrapper.style.width) || minW,
+                    height: parseFloat(wrapper.style.height) || minH,
+                };
+                try {
+                    localStorage.setItem(storageKey, JSON.stringify(state));
+                } catch (e) { /* ignore */ }
+            }
+
+            function loadState() {
+                try {
+                    const saved = localStorage.getItem(storageKey);
+                    if (saved) {
+                        const state = JSON.parse(saved);
+                        const left = typeof state.left === 'number' ? state.left : parseFloat(state.left) || 0;
+                        const top = typeof state.top === 'number' ? state.top : parseFloat(state.top) || 0;
+                        const width = typeof state.width === 'number' ? state.width : parseFloat(state.width) || minW;
+                        const height = typeof state.height === 'number' ? state.height : parseFloat(state.height) || minH;
+                        wrapper.style.left = Math.round(left) + 'px';
+                        wrapper.style.top = Math.round(top) + 'px';
+                        wrapper.style.width = Math.max(minW, Math.round(width)) + 'px';
+                        wrapper.style.height = Math.max(minH, Math.round(height)) + 'px';
+                        if (opts.onLoad) opts.onLoad(wrapper);
+                        return true;
+                    }
+                } catch (e) { /* ignore */ }
+                return false;
+            }
+
+            // MutationObserver lazy-init when hidden class is removed
+            let initialized = false;
+            const observer = new MutationObserver(() => {
+                if (!wrapper.classList.contains('hidden') && !initialized) {
+                    initialized = true;
+                    if (!loadState()) {
+                        initPosition();
+                    }
+                    clampPosition();
+                }
+                if (wrapper.classList.contains('hidden')) {
+                    initialized = false;
+                }
+            });
+            observer.observe(wrapper, { attributes: true, attributeFilter: ['class'] });
+
+            // Header drag
+            on(header, 'mousedown', (e) => {
+                if (e.target.closest('button') || e.target.closest('.resize-handle')) return;
+
+                isDragging = true;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+                const rect = wrapper.getBoundingClientRect();
+                startLeft = rect.left;
+                startTop = rect.top;
+                wrapper.classList.add('dragging');
+                document.body.style.userSelect = 'none';
+
+                if (wrapper.style.left === '' || wrapper.style.left === 'auto') {
+                    initPosition();
+                    const r2 = wrapper.getBoundingClientRect();
+                    startLeft = r2.left;
+                    startTop = r2.top;
+                }
+            });
+
+            // Global mousemove
+            on(document, 'mousemove', (e) => {
+                if (!isDragging && !isResizing) return;
+
+                if (isDragging) {
+                    const dx = e.clientX - dragStartX;
+                    const dy = e.clientY - dragStartY;
+                    let newLeft = startLeft + dx;
+                    let newTop = startTop + dy;
+
+                    const rect = wrapper.getBoundingClientRect();
+                    const maxX = window.innerWidth - 20;
+                    const maxY = window.innerHeight - 20;
+
+                    if (newLeft < 0) newLeft = 0;
+                    if (newTop < 0) newTop = 0;
+                    if (newLeft + rect.width > maxX) newLeft = maxX - rect.width;
+                    if (newTop + rect.height > maxY) newTop = maxY - rect.height;
+
+                    wrapper.style.left = newLeft + 'px';
+                    wrapper.style.top = newTop + 'px';
+                }
+
+                if (isResizing) {
+                    const dx = e.clientX - dragStartX;
+                    const dy = e.clientY - dragStartY;
+                    const maxW = window.innerWidth - 40;
+                    const maxH = window.innerHeight - 40;
+
+                    let newLeft = startLeft;
+                    let newTop = startTop;
+                    let newW = startWidth;
+                    let newH = startHeight;
+
+                    if (resizeDir.includes('e')) {
+                        newW = Math.max(minW, Math.min(maxW, startWidth + dx));
+                    }
+                    if (resizeDir.includes('w')) {
+                        newW = Math.max(minW, Math.min(maxW, startWidth - dx));
+                        newLeft = startLeft + (startWidth - newW);
+                    }
+                    if (resizeDir.includes('s')) {
+                        newH = Math.max(minH, Math.min(maxH, startHeight + dy));
+                    }
+                    if (resizeDir.includes('n')) {
+                        newH = Math.max(minH, Math.min(maxH, startHeight - dy));
+                        newTop = startTop + (startHeight - newH);
+                    }
+
+                    wrapper.style.width = newW + 'px';
+                    wrapper.style.height = newH + 'px';
+                    wrapper.style.left = newLeft + 'px';
+                    wrapper.style.top = newTop + 'px';
+
+                    if (opts.onResize) opts.onResize(wrapper);
+                }
+            });
+
+            // Global mouseup
+            on(document, 'mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    wrapper.classList.remove('dragging');
+                    document.body.style.userSelect = '';
+                    saveState();
+                }
+                if (isResizing) {
+                    isResizing = false;
+                    resizeDir = null;
+                    wrapper.classList.remove('resizing');
+                    document.body.style.userSelect = '';
+                    saveState();
+                }
+            });
+
+            // Resize handles (4 edges + 4 corners)
+            for (const handle of wrapper.querySelectorAll('.resize-handle')) {
+                on(handle, 'mousedown', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    isResizing = true;
+                    resizeDir = handle.dataset.dir;
+                    dragStartX = e.clientX;
+                    dragStartY = e.clientY;
+                    const rect = wrapper.getBoundingClientRect();
+                    startWidth = rect.width;
+                    startHeight = rect.height;
+                    startLeft = rect.left;
+                    startTop = rect.top;
+                    wrapper.classList.add('resizing');
+                    document.body.style.userSelect = 'none';
+
+                    if (wrapper.style.left === '' || wrapper.style.left === 'auto') {
+                        initPosition();
+                        const r2 = wrapper.getBoundingClientRect();
+                        startWidth = r2.width;
+                        startHeight = r2.height;
+                        startLeft = r2.left;
+                        startTop = r2.top;
+                    }
+                });
+            }
+
+            // Window resize clamp
+            on(window, 'resize', () => {
+                if (!wrapper.classList.contains('hidden') && wrapper.style.left !== '' && wrapper.style.left !== 'auto') {
+                    clampPosition();
+                }
+            });
+
+            return {
+                init: initPosition,
+                clamp: clampPosition,
+            };
+        }
 
         /* ========== Global State ========== */
         let db;
@@ -1552,15 +2163,16 @@
         let myNotesUnsubscribe = null;
         let sharedNotesUnsubscribe = null;
         let folderNotesUnsubscribe = null;
-        let notesCache = new Map();
+        const notesCache = new Map();
         let noteViewMode = 'edit'; // 'edit' | 'preview'
         let noteOrder = [];
         let batchMode = false;
         let splitRatio = parseFloat(localStorage.getItem('ymind_split_ratio')) || 0.55;
-        let selectedNotes = new Set();
+        const selectedNotes = new Set();
+        let batchShareNoteIds = null;
 
         // Brainstorm state
-        let brainstormBubble = null;
+        const brainstormBubble = null;
         let brainstormAbortController = null;
         let brainstormResultText = '';
         let lastEnterTime = 0;
@@ -1569,7 +2181,6 @@
         let bubbleViewMode = 'preview';
         let currentAiIndex = -1;
         let currentAiOutputs = [];
-        let bubbleCloseInProgress = false;
 
         /* ========== Provider Defaults ========== */
         const PROVIDER_DEFAULT_MODEL = {
@@ -1623,8 +2234,7 @@
             themeToggleBtn: document.getElementById('theme-toggle-btn'),
             backBtn: document.getElementById('back-btn'),
             previewBtn: document.getElementById('preview-btn'),
-            shareBtn: document.getElementById('share-btn'),
-            outputBtn: document.getElementById('output-btn'),
+
             shareModal: document.getElementById('share-modal'),
             closeModalBtn: document.getElementById('close-modal-btn'),
             addCollaboratorBtn: document.getElementById('add-collaborator-btn'),
@@ -1642,19 +2252,60 @@
             modelSelector: document.getElementById('model-selector'),
             aiHistoryBtn: document.getElementById('ai-history-btn'),
             aiHistoryMenu: document.getElementById('ai-history-menu'),
+            aiHistoryContent: document.getElementById('ai-history-content'),
             toast: document.getElementById('toast'),
+
+            // Settings
+            settingsPopover: document.getElementById('settings-popover'),
+            settingsBtn: document.getElementById('settings-btn'),
+            settingsConfirmBtn: document.getElementById('settings-confirm-btn'),
+            settingsCancelBtn: document.getElementById('settings-cancel-btn'),
+            settingsSeparatorInput: document.getElementById('settings-separator-input'),
+
+            // Batch mode
+            selectBtn: document.getElementById('select-btn'),
+            notesListContainer: document.getElementById('notes-list-container'),
+            batchCount: document.getElementById('batch-count'),
+            batchDeleteBtn: document.getElementById('batch-delete-btn'),
+            batchExportBtn: document.getElementById('batch-export-btn'),
+            batchShareBtn: document.getElementById('batch-share-btn'),
+
+            // Folders
+            createFolderModal: document.getElementById('create-folder-modal'),
+            folderNameInput: document.getElementById('folder-name-input'),
+            newFolderBtn: document.getElementById('new-folder-btn'),
+            cancelFolderBtn: document.getElementById('cancel-folder-btn'),
+            createFolderSubmitBtn: document.getElementById('create-folder-submit-btn'),
+
+            // Bubble
+            bubbleResizeWrapper: document.getElementById('bubble-resize-wrapper'),
+            bubblePrevBtn: document.getElementById('bubble-prev-btn'),
+            bubbleNextBtn: document.getElementById('bubble-next-btn'),
+            bubbleNavIndicator: document.getElementById('bubble-nav-indicator'),
+
+            // Editor
+            splitDivider: document.getElementById('split-divider'),
+            noteEditorContent: document.getElementById('note-editor-content'),
+            sidebarToggleBtn: document.getElementById('sidebar-toggle-btn'),
+
+            // Modal
+            confirmModal: document.getElementById('confirm-modal'),
+            confirmCancelBtn: document.getElementById('confirm-cancel-btn'),
+            confirmDeleteBtn: document.getElementById('confirm-delete-btn'),
         };
 
         /* ========== Utility Functions ========== */
-        const debounce = (func, delay) => {
+        function debounce(func, delay) {
             let timeout;
             return (...args) => {
                 clearTimeout(timeout);
                 timeout = setTimeout(() => func.apply(this, args), delay);
             };
-        };
+        }
 
-        const truncateAddress = (address) => `${address.slice(0, 6)}...${address.slice(-4)}`;
+        function truncateAddress(address) {
+            return `${address.slice(0, 6)}...${address.slice(-4)}`;
+        }
 
         function escapeHtml(text) {
             const div = document.createElement('div');
@@ -1704,11 +2355,19 @@
         async function handleSecurityStateChange(state) {
             currentUserAddress = state.activeAddress;
             if (state.isActive) {
+                /* Persist mnemonic so next load derives the same room name */
+                const mn = db.sm.getMnemonicForDisplayAfterRegistrationOrRecovery();
+                if (mn) {
+                    localStorage.setItem('ymind_mnemonic', mn);
+                    localStorage.removeItem('ymind_e2ee_derived');  // Force re-derivation on next load
+                }
                 dom.authScreen.classList.add('hidden');
                 dom.appScreen.classList.remove('hidden');
                 dom.sidebarUserId.textContent = 'ID: ' + truncateAddress(currentUserAddress);
                 await setupNoteSubscriptions();
             } else {
+                localStorage.removeItem('ymind_mnemonic');
+                localStorage.removeItem('ymind_e2ee_derived');
                 dom.appScreen.classList.add('hidden');
                 dom.authScreen.classList.remove('hidden');
                 renderAuthUI(state);
@@ -1721,7 +2380,7 @@
         }
 
         /* ========== Note Subscriptions ========== */
-        const updateNoteCache = (event) => {
+        function updateNoteCache(event) {
             if (event.action === 'removed') {
                 notesCache.delete(event.id);
             } else {
@@ -1729,7 +2388,7 @@
             }
             if (event.id === activeNoteId) renderNoteEditor();
             renderNotesList();
-        }
+        };
 
         async function setupNoteSubscriptions(searchTerm = '') {
             cleanupNoteSubscriptions();
@@ -1740,7 +2399,7 @@
             const folderSub = await db.map({ query: { $and: [{ type: 'folder' }, { owner: currentUserAddress }] } }, updateNoteCache);
             folderNotesUnsubscribe = folderSub.unsubscribe;
             const sharedNotesSub = await db.map({ query: { $and: [{ type: 'note' }] } }, (event) => {
-                if (event.value && event.value.collaborators && event.value.collaborators[currentUserAddress]) {
+                if (event.value?.collaborators?.[currentUserAddress]) {
                     updateNoteCache(event);
                 } else if (notesCache.has(event.id) && notesCache.get(event.id)?.value?.owner !== currentUserAddress) {
                     updateNoteCache({ action: 'removed', id: event.id });
@@ -1759,7 +2418,7 @@
         }
 
         /* ========== Note List Rendering ========== */
-        let folderExpanded = new Set();
+        const folderExpanded = new Set();
 
         function renderNotesList() {
             const allItems = [...notesCache.values()]
@@ -1795,6 +2454,36 @@
             }
         }
 
+        function setupDragHandlers(el, id, dragOverClass, onDrop) {
+            el.draggable = true;
+            el.addEventListener('dragstart', (e) => {
+                el.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', id);
+            });
+            el.addEventListener('dragend', () => {
+                el.classList.remove('dragging');
+                for (const target of document.querySelectorAll('.drag-over, .drag-over-folder')) target.classList.remove('drag-over', 'drag-over-folder');
+            });
+            el.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                for (const target of document.querySelectorAll(`.${dragOverClass}`)) target.classList.remove(dragOverClass);
+                el.classList.add(dragOverClass);
+            });
+            el.addEventListener('dragleave', () => {
+                el.classList.remove(dragOverClass);
+            });
+            el.addEventListener('drop', (e) => {
+                e.preventDefault();
+                el.classList.remove(dragOverClass);
+                const draggedId = e.dataTransfer.getData('text/plain');
+                if (draggedId && draggedId !== id) {
+                    onDrop(draggedId);
+                }
+            });
+        }
+
         function renderFolderItem(container, folder, byParent, depth) {
             const isOwner = folder.value.owner === currentUserAddress;
             const isExpanded = folderExpanded.has(folder.id);
@@ -1815,7 +2504,7 @@
 
             if (selectedNotes.has(folder.id)) folderEl.classList.add('selected');
 
-            folderEl.addEventListener('click', (e) => {
+            on(folderEl, 'click', (_e) => {
                 if (batchMode) {
                     toggleFolderSelection(folder.id, folderEl, byParent);
                     return;
@@ -1838,33 +2527,7 @@
             container.appendChild(childrenContainer);
 
             // Drag folder support
-            folderEl.draggable = true;
-            folderEl.addEventListener('dragstart', (e) => {
-                folderEl.classList.add('dragging');
-                e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('text/plain', folder.id);
-            });
-            folderEl.addEventListener('dragend', () => {
-                folderEl.classList.remove('dragging');
-                document.querySelectorAll('.drag-over, .drag-over-folder').forEach(el => el.classList.remove('drag-over', 'drag-over-folder'));
-            });
-            folderEl.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = 'move';
-                document.querySelectorAll('.drag-over-folder').forEach(el => el.classList.remove('drag-over-folder'));
-                folderEl.classList.add('drag-over-folder');
-            });
-            folderEl.addEventListener('dragleave', () => {
-                folderEl.classList.remove('drag-over-folder');
-            });
-            folderEl.addEventListener('drop', (e) => {
-                e.preventDefault();
-                folderEl.classList.remove('drag-over-folder');
-                const draggedId = e.dataTransfer.getData('text/plain');
-                if (draggedId && draggedId !== folder.id) {
-                    moveItemToFolder(draggedId, folder.id);
-                }
-            });
+            setupDragHandlers(folderEl, folder.id, 'drag-over-folder', (draggedId) => moveItemToFolder(draggedId, folder.id));
         }
 
         function renderNoteItem(container, note, depth) {
@@ -1873,7 +2536,6 @@
             noteEl.className = 'note-item';
             if (depth > 0) noteEl.classList.add(`depth-${Math.min(depth, 4)}`);
             noteEl.dataset.id = note.id;
-            noteEl.draggable = true;
             if (note.id === activeNoteId) noteEl.classList.add('active');
             if (!isOwner) noteEl.classList.add('shared-with-me');
 
@@ -1886,45 +2548,25 @@
             `;
             if (selectedNotes.has(note.id)) noteEl.classList.add('selected');
 
-            noteEl.addEventListener('click', (e) => {
+            on(noteEl, 'click', (_e) => {
                 if (batchMode) {
                     toggleNoteSelection(note.id, noteEl);
                 } else {
                     selectNote(note.id);
                 }
             });
-            noteEl.addEventListener('dragstart', (e) => {
-                noteEl.classList.add('dragging');
-                e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('text/plain', note.id);
-            });
-            noteEl.addEventListener('dragend', () => {
-                noteEl.classList.remove('dragging');
-                document.querySelectorAll('.drag-over, .drag-over-folder').forEach(el => el.classList.remove('drag-over', 'drag-over-folder'));
-            });
-            noteEl.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = 'move';
-                document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
-                noteEl.classList.add('drag-over');
-            });
-            noteEl.addEventListener('drop', (e) => {
-                e.preventDefault();
-                noteEl.classList.remove('drag-over');
-                const draggedId = e.dataTransfer.getData('text/plain');
-                if (draggedId && draggedId !== note.id) {
-                    noteOrder = noteOrder.filter(id => id !== draggedId);
-                    const targetIdx = noteOrder.indexOf(note.id);
-                    if (targetIdx >= 0) noteOrder.splice(targetIdx, 0, draggedId);
-                    else noteOrder.push(draggedId);
-                    renderNotesList();
-                }
+            setupDragHandlers(noteEl, note.id, 'drag-over', (draggedId) => {
+                noteOrder = noteOrder.filter(id => id !== draggedId);
+                const targetIdx = noteOrder.indexOf(note.id);
+                if (targetIdx >= 0) noteOrder.splice(targetIdx, 0, draggedId);
+                else noteOrder.push(draggedId);
+                renderNotesList();
             });
             container.appendChild(noteEl);
         }
 
         /* ========== Folder & Note Operations ========== */
-        function toggleFolderSelection(folderId, folderEl, byParent) {
+        function toggleFolderSelection(folderId, _folderEl, byParent) {
             const children = getAllDescendants(folderId, byParent);
             const allIds = [folderId, ...children];
             const allSelected = allIds.every(id => selectedNotes.has(id));
@@ -1951,7 +2593,7 @@
 
         async function moveItemToFolder(itemId, folderId) {
             const item = notesCache.get(itemId);
-            if (!item || !item.value) return;
+            if (!item?.value) return;
             const updated = { ...item.value, parentId: folderId };
             // Remove from noteOrder when moving into a folder (simplified)
             noteOrder = noteOrder.filter(id => id !== itemId);
@@ -1981,17 +2623,17 @@
             if (!batchMode) {
                 selectedNotes.clear();
             }
-            document.getElementById('notes-list-container').classList.toggle('batch-mode', batchMode);
-            document.getElementById('select-btn').innerHTML = batchMode
+            dom.notesListContainer.classList.toggle('batch-mode', batchMode);
+            dom.selectBtn.innerHTML = batchMode
                 ? '<i class="ph-bold ph-x"></i>'
                 : '<i class="ph-bold ph-list"></i>';
-            document.getElementById('select-btn').title = batchMode ? 'Cancel Select' : 'Batch Select';
+            dom.selectBtn.title = batchMode ? 'Cancel Select' : 'Batch Select';
             updateBatchCount();
             renderNotesList();
         }
 
         function updateBatchCount() {
-            const el = document.getElementById('batch-count');
+            const el = dom.batchCount;
             if (el) el.textContent = `${selectedNotes.size} selected`;
         }
 
@@ -2013,7 +2655,7 @@
         function batchExport() {
             for (const id of selectedNotes) {
                 const note = notesCache.get(id);
-                if (!note || !note.value) continue;
+                if (!note?.value) continue;
                 const title = note.value.title || 'Untitled';
                 const content = note.value.content || '';
                 const blob = new Blob([content], { type: 'text/markdown' });
@@ -2029,7 +2671,7 @@
         /* ========== Editor Functions ========== */
         function renderNoteEditor() {
             const note = notesCache.get(activeNoteId);
-            if (!note || !note.value) {
+            if (!note?.value) {
                 showEditor(false);
                 return;
             }
@@ -2053,7 +2695,7 @@
                 dom.noteContentInput.placeholder = hasInitialContent ? '' : 'Start writing... Supports Markdown.\n\nTip: Type your question, then press Enter twice to brainstorm with AI.';
             }
             dom.deleteBtn.classList.toggle('hidden', !isOwner);
-            dom.shareBtn.classList.toggle('hidden', !isOwner);
+            
             dom.previewBtn.classList.toggle('hidden', isFolder);
             renderMarkdownPreview();
             showEditor(true);
@@ -2099,7 +2741,7 @@
         const updateNote = debounce(async () => {
             if (!activeNoteId) return;
             const existingNote = notesCache.get(activeNoteId);
-            if (!existingNote || !existingNote.value) return;
+            if (!existingNote?.value) return;
             const updatedNote = { ...existingNote.value, title: dom.noteTitleInput.value, content: dom.noteContentInput.value };
             await db.sm.acls.set(updatedNote, activeNoteId);
         }, 500);
@@ -2115,29 +2757,16 @@
         }
 
         function showConfirmModal(title, message, onConfirm) {
-            const modal = document.getElementById('confirm-modal');
+            const modal = dom.confirmModal;
             modal.querySelector('h2').textContent = title;
             modal.querySelector('p').textContent = message;
             modal.classList.remove('hidden');
-            const cancelBtn = document.getElementById('confirm-cancel-btn');
-            const confirmBtn = document.getElementById('confirm-delete-btn');
+            const cancelBtn = dom.confirmCancelBtn;
+            const confirmBtn = dom.confirmDeleteBtn;
             const close = () => modal.classList.add('hidden');
-            cancelBtn.onclick = close;
-            modal.onclick = (e) => { if (e.target === modal) close(); };
-            confirmBtn.onclick = () => { close(); onConfirm(); };
-        }
-
-        function exportNoteAsMd() {
-            if (!activeNoteId) return;
-            const title = dom.noteTitleInput.value || 'Untitled';
-            const content = dom.noteContentInput.value || '';
-            const blob = new Blob([content], { type: 'text/markdown' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${title}.md`;
-            a.click();
-            URL.revokeObjectURL(url);
+            on(cancelBtn, 'click', close);
+            on(modal, 'click', (e) => { if (e.target === modal) close(); });
+            on(confirmBtn, 'click', () => { close(); onConfirm(); });
         }
 
         /* ========== Split View ========== */
@@ -2152,7 +2781,7 @@
         }
 
         function setupSplitDivider() {
-            const divider = document.getElementById('split-divider');
+            const divider = dom.splitDivider;
             if (!divider || divider._init) return;
             divider._init = true;
 
@@ -2162,7 +2791,7 @@
             let wrapWidth = 0;
             let rafPending = false;
             let cachedEvent = null;
-            const wrap = document.getElementById('note-editor-content');
+            const wrap = dom.noteEditorContent;
             const input = document.getElementById('note-content-input');
             const preview = document.getElementById('note-preview');
 
@@ -2173,7 +2802,7 @@
                 applySplitRatio(wrap);
             }
 
-            divider.addEventListener('mousedown', (e) => {
+            on(divider, 'mousedown', (e) => {
                 if (!wrap.classList.contains('split-view')) return;
                 dragging = true;
                 startX = e.clientX;
@@ -2188,7 +2817,7 @@
                 e.preventDefault();
             });
 
-            document.addEventListener('mousemove', (e) => {
+            on(document, 'mousemove', (e) => {
                 if (!dragging) return;
                 cachedEvent = e;
                 if (!rafPending) {
@@ -2203,7 +2832,7 @@
                 }
             });
 
-            document.addEventListener('mouseup', () => {
+            on(document, 'mouseup', () => {
                 if (!dragging) return;
                 dragging = false;
                 rafPending = false;
@@ -2220,7 +2849,7 @@
 
         /* ========== Markdown Preview ========== */
         function renderMarkdownPreview() {
-            const contentWrap = document.getElementById('note-editor-content');
+            const contentWrap = dom.noteEditorContent;
             if (noteViewMode === 'preview') {
                 contentWrap.classList.add('split-view');
                 dom.noteContentInput.classList.remove('hidden');
@@ -2256,8 +2885,8 @@
                 };
                 input._syncHandler = onInputScroll;
                 preview._syncHandler = onPreviewScroll;
-                input.addEventListener('scroll', onInputScroll);
-                preview.addEventListener('scroll', onPreviewScroll);
+                on(input, 'scroll', onInputScroll);
+                on(preview, 'scroll', onPreviewScroll);
             } else {
                 contentWrap.classList.remove('split-view');
                 dom.noteContentInput.classList.remove('hidden');
@@ -2276,12 +2905,46 @@
         }
 
         /* ========== Share & Collaboration ========== */
-        function renderShareModal() {
-            const note = notesCache.get(activeNoteId);
-            if (!note || !note.value) return;
-            const collaborators = note.value.collaborators || {};
+        function renderShareModal(noteIds) {
+            // Determine which note IDs to operate on
+            if (noteIds?.length) {
+                batchShareNoteIds = [...noteIds];
+            } else {
+                batchShareNoteIds = null;
+            }
+            const ids = batchShareNoteIds || [activeNoteId];
+            const firstId = ids[0];
+            if (!firstId) return;
+
+            // Build byParent map for recursive folder traversal
+            const allItems = [...notesCache.values()].filter(n => n.value !== null && n.value.brainstormOutput !== true);
+            const byParent = new Map();
+            for (const item of allItems) {
+                const pid = item.value.parentId || '__root__';
+                if (!byParent.has(pid)) byParent.set(pid, []);
+                byParent.get(pid).push(item);
+            }
+
+            // Collect union of all collaborators across selected items
+            const allCollaborators = {};
+            for (const id of ids) {
+                const n = notesCache.get(id);
+                if (n?.value?.collaborators) {
+                    Object.assign(allCollaborators, n.value.collaborators);
+                }
+            }
+
+            // Update modal header
+            const header = dom.shareModal.querySelector('h2');
+            if (batchShareNoteIds && batchShareNoteIds.length > 1) {
+                header.textContent = `Share ${batchShareNoteIds.length} Items`;
+            } else {
+                header.textContent = 'Share Note';
+            }
+
+            // Render collaborators
             dom.collaboratorsContainer.innerHTML = '';
-            for (const [address, permission] of Object.entries(collaborators)) {
+            for (const [address, permission] of Object.entries(allCollaborators)) {
                 const item = document.createElement('div');
                 item.className = 'collaborator-item';
                 item.innerHTML = `
@@ -2291,11 +2954,11 @@
                     </div>
                     <button data-address="${address}"><i class="ph-bold ph-x"></i></button>
                 `;
-                item.querySelector('span').onclick = () => {
+                on(item.querySelector('span'), 'click', () => {
                     dom.shareAddressInput.value = address;
                     dom.sharePermissionSelect.value = permission;
-                };
-                item.querySelector('button').onclick = () => removeCollaborator(address);
+                });
+                on(item.querySelector('button'), 'click', () => removeCollaborator(address, byParent));
                 dom.collaboratorsContainer.appendChild(item);
             }
             dom.shareModal.classList.remove('hidden');
@@ -2304,28 +2967,71 @@
         async function addCollaborator() {
             const address = dom.shareAddressInput.value.trim();
             const permission = dom.sharePermissionSelect.value;
-            if (!address || !activeNoteId) return;
-            await db.sm.acls.grant(activeNoteId, address, permission);
-            dom.shareAddressInput.value = '';
-            const { result: updatedNote } = await db.get(activeNoteId);
-            if (updatedNote) {
-                notesCache.set(activeNoteId, { id: activeNoteId, value: updatedNote.value, timestamp: updatedNote.timestamp });
+            if (!address) return;
+            const ids = batchShareNoteIds || [activeNoteId];
+            if (!ids[0]) return;
+
+            // Build byParent map for recursive folder traversal
+            const allItems = [...notesCache.values()].filter(n => n.value !== null && n.value.brainstormOutput !== true);
+            const byParent = new Map();
+            for (const item of allItems) {
+                const pid = item.value.parentId || '__root__';
+                if (!byParent.has(pid)) byParent.set(pid, []);
+                byParent.get(pid).push(item);
             }
-            renderShareModal();
+
+            // Grant ACL on all selected items (recursively for folders)
+            for (const noteId of ids) {
+                const item = notesCache.get(noteId);
+                // If this is a folder, recursively share all descendants
+                if (item?.value?.type === 'folder') {
+                    const descendants = getAllDescendants(noteId, byParent);
+                    for (const childId of descendants) {
+                        await db.sm.acls.grant(childId, address, permission);
+                    }
+                }
+                await db.sm.acls.grant(noteId, address, permission);
+            }
+            dom.shareAddressInput.value = '';
+
+            // Refresh cache for all items
+            for (const noteId of ids) {
+                const { result: updatedNote } = await db.get(noteId);
+                if (updatedNote) {
+                    notesCache.set(noteId, { id: noteId, value: updatedNote.value, timestamp: updatedNote.timestamp });
+                }
+            }
+            renderShareModal(batchShareNoteIds);
         }
 
-        async function removeCollaborator(address) {
-            await db.sm.acls.revoke(activeNoteId, address);
-            const { result: updatedNote } = await db.get(activeNoteId);
-            if (updatedNote) {
-                notesCache.set(activeNoteId, { id: activeNoteId, value: updatedNote.value, timestamp: updatedNote.timestamp });
+        async function removeCollaborator(address, byParent) {
+            const ids = batchShareNoteIds || [activeNoteId];
+
+            // Revoke ACL on all selected items (recursively for folders)
+            for (const noteId of ids) {
+                const item = notesCache.get(noteId);
+                if (item?.value?.type === 'folder') {
+                    const descendants = getAllDescendants(noteId, byParent);
+                    for (const childId of descendants) {
+                        await db.sm.acls.revoke(childId, address);
+                    }
+                }
+                await db.sm.acls.revoke(noteId, address);
             }
-            renderShareModal();
+
+            // Refresh cache for all items
+            for (const noteId of ids) {
+                const { result: updatedNote } = await db.get(noteId);
+                if (updatedNote) {
+                    notesCache.set(noteId, { id: noteId, value: updatedNote.value, timestamp: updatedNote.timestamp });
+                }
+            }
+            renderShareModal(batchShareNoteIds);
         }
 
         /* ========== Brainstorm UI ========== */
         function showBrainstormBubble() {
-            document.getElementById('bubble-resize-wrapper').classList.remove('hidden');
+            dom.bubbleResizeWrapper.classList.remove('hidden');
             dom.bubbleContent.textContent = '';
             brainstormResultText = '';
             bubbleViewMode = 'preview';
@@ -2333,7 +3039,7 @@
         }
 
         function hideBrainstormBubble() {
-            document.getElementById('bubble-resize-wrapper').classList.add('hidden');
+            dom.bubbleResizeWrapper.classList.add('hidden');
             if (brainstormAbortController) {
                 brainstormAbortController.abort();
                 brainstormAbortController = null;
@@ -2381,10 +3087,12 @@
             brainstormAbortController = new AbortController();
             let streamError = false;
             try {
+                const prePrompt = loadPrePrompt();
+                const fullPrompt = prePrompt ? `${prePrompt}\n\n${prompt}` : prompt;
                 const response = await fetch(BRAINSTORM_WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ provider, model, prompt, stream: true }),
+                    body: JSON.stringify({ provider, model, prompt: fullPrompt, stream: true }),
                     signal: brainstormAbortController.signal,
                 });
                 if (!response.ok) {
@@ -2404,7 +3112,7 @@
                     for (const line of lines) {
                         const trimmed = line.trim();
                         if (!trimmed || trimmed === 'data: [DONE]') continue;
-                        let dataStr = trimmed.startsWith('data: ') ? trimmed.slice(6) : trimmed;
+                        const dataStr = trimmed.startsWith('data: ') ? trimmed.slice(6) : trimmed;
                         try {
                             const data = JSON.parse(dataStr);
                             if (data.text) appendBrainstormText(data.text);
@@ -2440,10 +3148,11 @@
                 return;
             }
             const content = dom.noteContentInput.value.replace(/💭/g, '');
-            const lastQuestionMarkPos = Math.max(content.lastIndexOf('?'), content.lastIndexOf('？'));
-            if (lastQuestionMarkPos === -1) return;
-            const prompt = content.slice(0, lastQuestionMarkPos + 1);
-            await doBrainstormFetch(prompt, lastQuestionMarkPos);
+            const sep = loadSeparator();
+            const lastSepPos = content.lastIndexOf(sep);
+            if (lastSepPos === -1) return;
+            const prompt = content.slice(0, lastSepPos + sep.length);
+            await doBrainstormFetch(prompt, lastSepPos + sep.length);
         }
 
         async function triggerBrainstormCtrlEnter() {
@@ -2452,32 +3161,38 @@
                 return;
             }
             const content = dom.noteContentInput.value.replace(/💭/g, '');
-            const lastQ = Math.max(content.lastIndexOf('?'), content.lastIndexOf('？'));
+            const sep = loadSeparator();
+            const lastQ = content.lastIndexOf(sep);
             if (lastQ === -1) {
                 triggerBrainstorm();
                 return;
             }
             const beforeLast = content.slice(0, lastQ);
-            const prevQ = Math.max(beforeLast.lastIndexOf('?'), beforeLast.lastIndexOf('？'));
+            const prevQ = beforeLast.lastIndexOf(sep);
             let prompt;
             if (prevQ === -1) {
-                prompt = content.slice(0, lastQ + 1);
+                prompt = content.slice(0, lastQ + sep.length);
             } else {
-                prompt = content.slice(prevQ + 1, lastQ + 1);
+                prompt = content.slice(prevQ + sep.length, lastQ + sep.length);
             }
             if (!prompt.trim()) return;
-            await doBrainstormFetch(prompt, lastQ);
+            await doBrainstormFetch(prompt, lastQ + sep.length);
         }
 
         function handleContentKeydown(e) {
-            if (e.key === 'Enter' && e.ctrlKey) {
+            const shortcuts = loadShortcuts();
+            const sc = shortcuts.brainstormCtrlEnter;
+            const dc = shortcuts.brainstormDoubleEnter;
+
+            if (!sc.disabled && sc?.ctrl && e.key === sc.key) {
                 e.preventDefault();
                 triggerBrainstormCtrlEnter();
                 return;
             }
-            if (e.key === 'Enter') {
+
+            if (!dc.disabled && e.key === dc.key) {
                 const now = Date.now();
-                if (now - lastEnterTime < 500) {
+                if (now - lastEnterTime < (dc.delay || 500)) {
                     e.preventDefault();
                     lastEnterTime = 0;
                     triggerBrainstorm();
@@ -2488,44 +3203,10 @@
         }
 
         /* ========== AI Response Storage ========== */
-        function handleBubbleClose() {
-            if (bubbleCloseInProgress) return;
-            if (!brainstormResultText.trim()) {
-                hideBrainstormBubble();
-                return;
-            }
-
-            const content = dom.noteContentInput.value;
-            const filtered = content.replace(/💭/g, '');
-            const lastQ = Math.max(filtered.lastIndexOf('?'), filtered.lastIndexOf('？'));
-            if (lastQ === -1) {
-                hideBrainstormBubble();
-                return;
-            }
-
-            // Prevent duplicate insertion for the same (noteId, lastQ) combination
-            const sessionKey = `bubble_closed_${activeNoteId}_${lastQ}`;
-            if (sessionStorage.getItem(sessionKey)) {
-                hideBrainstormBubble();
-                return;
-            }
-            sessionStorage.setItem(sessionKey, '1');
-
-            bubbleCloseInProgress = true;
-            createHiddenNote(brainstormResultText, activeNoteId, lastQ).then(result => {
-                updateParentAiResponses(activeNoteId, result.id, lastQ);
-                bubbleCloseInProgress = false;
-            }).catch(() => {
-                bubbleCloseInProgress = false;
-            });
-
-            hideBrainstormBubble();
-        }
-
         async function updateParentAiResponses(noteId, hiddenNoteId, questionEndPos) {
             if (!noteId) return;
             const { result } = await db.get(noteId);
-            if (!result || !result.value) return;
+            if (!result?.value) return;
             const note = result.value;
             if (!note.aiResponses) note.aiResponses = [];
             const exists = note.aiResponses.some(r => r.id === hiddenNoteId);
@@ -2561,15 +3242,35 @@
             }, 2000);
         }
 
-        function handleBubbleContentMouseup() {
-            const selection = window.getSelection().toString().trim();
-            if (selection) {
-                navigator.clipboard.writeText(selection);
-                dom.bubbleHint.textContent = 'Copied!';
+        /* ========== Connection Status UI ========== */
+        function updateConnectionStatus(state, text) {
+            const el = document.getElementById('connection-status');
+            const dot = document.getElementById('connection-dot');
+            const textEl = document.getElementById('connection-text');
+            if (!el || !dot || !textEl) return;
+            el.className = 'connection-status ' + state;
+            if (textEl) textEl.textContent = text || '';
+            if (state === 'connected' || state === 'failed') {
+                // Hide after 3s for connected, stay for failed
                 setTimeout(() => {
-                    dom.bubbleHint.textContent = 'Select text to copy';
-                }, 1500);
+                    if (state === 'connected') el.classList.add('hidden');
+                }, 3000);
+            } else {
+                el.classList.remove('hidden');
             }
+        }
+
+        /* ========== Peer Trust ========== */
+        function getTrustedCollaborators() {
+            const collabs = new Set();
+            for (const note of notesCache.values()) {
+                if (note.value?.collaborators) {
+                    for (const addr of Object.keys(note.value.collaborators)) {
+                        collabs.add(addr);
+                    }
+                }
+            }
+            return Array.from(collabs);
         }
 
         /* ========== Initialization ========== */
@@ -2582,9 +3283,28 @@
                     user: { can: ["write"], inherits: ["guest"] },
                     guest: { can: ["read", "write", "sync"] },
                 };
-                const SUPERADMIN_ADDRESSES = ["0xE5639DfE345F8ab845bEBE63a1C7322F9c6fF5c7"];
-                db = await gdb("notes-dev-db", {
-                    rtc: true,
+                const SUPERADMIN_ADDRESSES = ["0x0000000000000000000000000000000000000000"];
+                const e2eePassword = await getOrCreateE2EEPassword();
+                const storedMnemonic = localStorage.getItem('ymind_mnemonic');
+                const ROOM_ID = storedMnemonic
+                    ? await deriveRoomName(storedMnemonic)
+                    : 'ymind-anon-' + Date.now();
+                const rateLimitMap = new Map();
+                db = await gdb(ROOM_ID, {
+                    rtc: {
+                        relayUrls: [
+                            'wss://relay.dvinf.io',
+                            'wss://nostr.oxtr.dev',
+                            'wss://relay.snort.social',
+                            'wss://nostr-pub.wellorder.net',
+                            'wss://relay.nostr.net',
+                        ],
+                        turnConfig: [
+                            { urls: ['stun:stun.l.google.com:19302'] },
+                            { urls: ['stun:stunprotocol.org:3478'] },
+                        ],
+                    },
+                    password: e2eePassword,
                     sm: {
                         superAdmins: SUPERADMIN_ADDRESSES,
                         customRoles: CUSTOM_ROLES,
@@ -2593,57 +3313,165 @@
                 });
                 db.sm.setSecurityStateChangeCallback(handleSecurityStateChange);
 
+                /* --- Security Middlewares --- */
+                // Operation validator: reject malformed operations
+                db.use?.({
+                    name: 'op-validator',
+                    middleware: async (ops, localGraph) => {
+                        const valid = [];
+                        for (const op of ops) {
+                            if (!op.type || !op.id) continue;
+                            if (op.timestamp) {
+                                const ts = typeof op.timestamp === 'object' && op.timestamp !== null
+                                    ? (op.timestamp.t || op.timestamp.l || 0)
+                                    : op.timestamp;
+                                if (typeof ts === 'number' && (ts > Date.now() + 7200000 || ts < Date.now() - 7200000)) {
+                                    continue;
+                                }
+                            }
+                            valid.push(op);
+                        }
+                        return valid;
+                    }
+                });
+
+                // Rate limiter: max 50 ops/sec per signer
+                db.use?.({
+                    name: 'rate-limiter',
+                    middleware: async (ops, localGraph) => {
+                        const now = Date.now();
+                        const allowed = [];
+                        for (const op of ops) {
+                            const signer = op.signer || 'unknown';
+                            let entry = rateLimitMap.get(signer);
+                            if (!entry || now > entry.resetAt) {
+                                entry = { count: 0, resetAt: now + 1000 };
+                            }
+                            entry.count++;
+                            if (entry.count <= 50) {
+                                allowed.push(op);
+                            }
+                            rateLimitMap.set(signer, entry);
+                        }
+                        return allowed;
+                    }
+                });
+
+                /* --- Connection State Management --- */
+                let reconnectAttempts = 0;
+                const MAX_RECONNECT_ATTEMPTS = 5;
+                const BASE_RECONNECT_DELAY = 1000; // ms
+
+                // Called when P2P connection is established
+                if (typeof db.onconnect === 'function') {
+                    db.onconnect = function(peer) {
+                        // Peer filtering: disconnect untrusted peers immediately
+                        const trusted = getTrustedCollaborators();
+                        if (peer && !trusted.includes(peer)) {
+                            const peers = db.room?.getPeers?.();
+                            peers?.get?.(peer)?.close?.();
+                            console.warn('Blocked unknown peer:', peer);
+                            return;
+                        }
+                        reconnectAttempts = 0;
+                        updateConnectionStatus('connected', peer ? 'P2P已连接' : '已连接');
+                    };
+                }
+
+                // Called when P2P connection drops
+                if (typeof db.onclose === 'function') {
+                    db.onclose = function() {
+                        updateConnectionStatus('disconnected', '连接已断开，正在重连...');
+                        scheduleReconnect();
+                    };
+                }
+
+                // Called when sync occurs
+                if (typeof db.onsync === 'function') {
+                    db.onsync = function(data) {
+                        updateConnectionStatus('syncing', '同步中...');
+                        // After sync completes, status will update via onconnect/onclose
+                    };
+                }
+
+                // Reconnect logic with exponential backoff
+                function scheduleReconnect() {
+                    if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+                        updateConnectionStatus('failed', '连接失败，请检查网络');
+                        return;
+                    }
+                    reconnectAttempts++;
+                    const delay = BASE_RECONNECT_DELAY * Math.pow(2, reconnectAttempts - 1);
+                    updateConnectionStatus('reconnecting', `正在重连 (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
+                    setTimeout(() => {
+                        // Trigger reconnection by accessing db — GenDB will attempt to reconnect
+                        if (db && db.map) {
+                            db.map('status_check').get().then(() => {
+                                // Connection restored
+                            }).catch(() => {
+                                scheduleReconnect();
+                            });
+                        }
+                    }, delay);
+                }
+
                 /* --- Auth Event Handlers --- */
-                dom.authActions.generate.onclick = () => db.sm.startNewUserRegistration();
-                dom.authActions.loginMnemonic.onclick = () => {
+                on(dom.authActions.generate, 'click', () => db.sm.startNewUserRegistration());
+                on(dom.authActions.loginMnemonic, 'click', () => {
                     const m = dom.mnemonicArea.value.trim();
                     if (m) db.sm.loginOrRecoverUserWithMnemonic(m);
-                };
-                dom.authActions.loginPasskey.onclick = () => db.sm.loginCurrentUserWithWebAuthn();
-                dom.authActions.copyPhrase.onclick = () => {
+                });
+                on(dom.authActions.loginPasskey, 'click', () => db.sm.loginCurrentUserWithWebAuthn());
+                on(dom.authActions.copyPhrase, 'click', () => {
                     navigator.clipboard.writeText(dom.mnemonicArea.value);
                     alert('Mnemonic copied!');
-                };
-                dom.authActions.protectPasskey.onclick = () => db.sm.protectCurrentIdentityWithWebAuthn();
-                dom.logoutBtn.onclick = () => db.sm.clearSecurity();
+                });
+                on(dom.authActions.protectPasskey, 'click', () => db.sm.protectCurrentIdentityWithWebAuthn());
+                on(dom.logoutBtn, 'click', () => db.sm.clearSecurity());
 
                 /* --- Note CRUD Event Handlers --- */
-                dom.newNoteBtn.onclick = () => createNewNote();
-                document.getElementById('new-folder-btn').onclick = () => {
-                    document.getElementById('create-folder-modal').classList.remove('hidden');
-                    document.getElementById('folder-name-input').focus();
-                };
-                document.getElementById('cancel-folder-btn').onclick = () => {
-                    document.getElementById('create-folder-modal').classList.add('hidden');
-                    document.getElementById('folder-name-input').value = '';
-                };
-                document.getElementById('create-folder-submit-btn').onclick = async () => {
-                    const nameInput = document.getElementById('folder-name-input');
+                on(dom.newNoteBtn, 'click', () => createNewNote());
+                on(dom.newFolderBtn, 'click', () => {
+                    dom.createFolderModal.classList.remove('hidden');
+                    dom.folderNameInput.focus();
+                });
+                on(dom.cancelFolderBtn, 'click', () => {
+                    dom.createFolderModal.classList.add('hidden');
+                    dom.folderNameInput.value = '';
+                });
+                on(dom.createFolderSubmitBtn, 'click', async () => {
+                    const nameInput = dom.folderNameInput;
                     const title = nameInput.value.trim();
                     if (!title) return;
                     await createFolder(title);
-                    document.getElementById('create-folder-modal').classList.add('hidden');
+                    dom.createFolderModal.classList.add('hidden');
                     nameInput.value = '';
-                };
-                dom.deleteBtn.onclick = deleteNote;
-                dom.outputBtn.onclick = exportNoteAsMd;
+                });
+                on(dom.deleteBtn, 'click', deleteNote);
+                
 
                 /* --- Batch Mode Handlers --- */
-                document.getElementById('select-btn').onclick = toggleBatchMode;
-                document.getElementById('batch-delete-btn').onclick = batchDelete;
-                document.getElementById('batch-export-btn').onclick = batchExport;
-                document.getElementById('batch-share-btn').onclick = () => showToast('Batch share not yet implemented');
+                on(dom.selectBtn, 'click', toggleBatchMode);
+                on(dom.batchDeleteBtn, 'click', batchDelete);
+                on(dom.batchExportBtn, 'click', batchExport);
+                on(dom.batchShareBtn, 'click', () => {
+                    if (selectedNotes.size === 0) {
+                        showToast('No items selected');
+                        return;
+                    }
+                    renderShareModal([...selectedNotes]);
+                });
 
                 /* --- Editor Event Handlers --- */
-                dom.backBtn.onclick = () => dom.noteEditorContainer.classList.remove('active');
-                dom.previewBtn.onclick = togglePreviewMode;
+                on(dom.backBtn, 'click', () => dom.noteEditorContainer.classList.remove('active'));
+                on(dom.previewBtn, 'click', togglePreviewMode);
                 setupSplitDivider();
-                dom.noteTitleInput.addEventListener('input', updateNote);
-                dom.noteContentInput.addEventListener('input', () => {
+                on(dom.noteTitleInput, 'input', updateNote);
+                on(dom.noteContentInput, 'input', () => {
                     updateNote();
                     // Clear initial welcome content on first edit
                     const note = notesCache.get(activeNoteId);
-                    if (note && note.value && note.value.isInitialContent) {
+                    if (note?.value?.isInitialContent) {
                         note.value.isInitialContent = false;
                         dom.noteContentInput.classList.remove('initial-welcome');
                         dom.noteContentInput.placeholder = 'Start writing... Supports Markdown.\n\nTip: Type your question, then press Enter twice to brainstorm with AI.';
@@ -2652,22 +3480,215 @@
                         dom.notePreview.innerHTML = marked.parse(dom.noteContentInput.value);
                     }
                 });
-                dom.noteContentInput.addEventListener('click', () => {
+                on(dom.noteContentInput, 'click', () => {
                     // Clear initial welcome on any click in editor
                     const note = notesCache.get(activeNoteId);
-                    if (note && note.value && note.value.isInitialContent) {
+                    if (note?.value?.isInitialContent) {
                         note.value.isInitialContent = false;
                         dom.noteContentInput.classList.remove('initial-welcome');
                         dom.noteContentInput.placeholder = 'Start writing... Supports Markdown.\n\nTip: Type your question, then press Enter twice to brainstorm with AI.';
                     }
                 });
-                dom.noteContentInput.addEventListener('keydown', handleContentKeydown);
-                dom.searchInput.addEventListener('input', debounce(e => setupNoteSubscriptions(e.target.value.trim()), 300));
+                on(dom.noteContentInput, 'keydown', handleContentKeydown);
+                on(dom.searchInput, 'input', debounce(e => setupNoteSubscriptions(e.target.value.trim()), 300));
 
                 /* --- Theme --- */
                 const savedTheme = localStorage.getItem('notesdev-theme') || 'light';
                 applyTheme(savedTheme);
-                dom.themeToggleBtn.onclick = toggleTheme;
+                on(dom.themeToggleBtn, 'click', toggleTheme);
+
+                /* --- Settings Popover --- */
+                const settingsBtn = dom.settingsBtn;
+                const settingsPopover = dom.settingsPopover;
+                let listeningShortcutsActive = false;
+
+                const DEFAULT_SHORTCUTS = {
+                    brainstormDoubleEnter: { key: 'Enter', ctrl: false, count: 2, delay: 500, description: 'Double Enter (brainstorm)' },
+                    brainstormCtrlEnter:   { key: 'Enter', ctrl: true, description: 'Ctrl+Enter (region)' },
+                    openAiHistory:          { key: 's', ctrl: true, description: 'Ctrl+S (open AI history)' },
+                    exitBatchMode:         { key: 'Escape', description: 'Escape (exit batch)' },
+                    navigateAiPrev:        { key: 'ArrowLeft', description: 'Arrow Left (prev AI)' },
+                    navigateAiNext:        { key: 'ArrowRight', description: 'Arrow Right (next AI)' },
+                };
+
+                function loadShortcuts() {
+                    const parsed = getJsonItem('ymind_shortcuts', null);
+                    if (parsed) {
+                        const result = {};
+                        for (const key of Object.keys(DEFAULT_SHORTCUTS)) {
+                            result[key] = { ...DEFAULT_SHORTCUTS[key], ...(parsed[key] || {}) };
+                        }
+                        return result;
+                    }
+                    return { ...DEFAULT_SHORTCUTS };
+                }
+
+                function saveShortcuts(shortcuts) {
+                    setJsonItem('ymind_shortcuts', shortcuts);
+                }
+
+                function loadSeparator() {
+                    return localStorage.getItem('ymind_separator') || '?';
+                }
+
+                function saveSeparator(sep) {
+                    localStorage.setItem('ymind_separator', sep);
+                }
+
+                function loadPrePrompt() {
+                    return localStorage.getItem('ymind_preprompt') || '';
+                }
+
+                function savePrePrompt(text) {
+                    localStorage.setItem('ymind_preprompt', text);
+                }
+
+                on(settingsBtn, 'click', (e) => {
+                    e.stopPropagation();
+                    const isOpen = !settingsPopover.classList.contains('hidden');
+                    if (isOpen) {
+                        settingsPopover.classList.add('hidden');
+                    } else {
+                        loadSettingsValues();
+                        settingsPopover.classList.remove('hidden');
+                    }
+                });
+
+                /* --- Close Settings on Escape (not during shortcut listening) --- */
+                on(document, 'keydown', (e) => {
+                    if (e.key === 'Escape' && !settingsPopover.classList.contains('hidden') && !listeningShortcutsActive) {
+                        settingsPopover.classList.add('hidden');
+                    }
+                });
+
+                for (const header of document.querySelectorAll('.settings-section-header')) {
+                    on(header, 'click', (e) => {
+                        const section = header.closest('.settings-section');
+                        // Pre-prompt Prefix section opens bubble directly
+                        if (section.dataset.section === 'preprompt') {
+                            e.stopPropagation();
+                            openPrepromptBubble();
+                            return;
+                        }
+                        const body = section.querySelector('.settings-section-body');
+                        const isOpen = !body.classList.contains('hidden');
+                        if (isOpen) {
+                            body.classList.add('hidden');
+                            section.classList.remove('open');
+                        } else {
+                            body.classList.remove('hidden');
+                            section.classList.add('open');
+                        }
+                    });
+                }
+
+                function formatShortcutLabel(action, cfg) {
+                    if (cfg.disabled) return 'Disabled';
+                    if (action === 'brainstormDoubleEnter') {
+                        const isDefault = cfg.key === 'Enter' && cfg.count === 2 && cfg.delay === 500;
+                        return isDefault ? 'Enter×2' : (cfg.key + '\u00d7' + cfg.count);
+                    }
+                    if (action === 'brainstormCtrlEnter') {
+                        return cfg.ctrl ? 'Ctrl+' + cfg.key : cfg.key;
+                    }
+                    return cfg.ctrl ? 'Ctrl+' + cfg.key : cfg.key;
+                }
+
+                function loadSettingsValues() {
+                    const shortcuts = loadShortcuts();
+                    for (const input of document.querySelectorAll('.settings-shortcut-input')) {
+                        const action = input.dataset.action;
+                        const cfg = shortcuts[action];
+                        if (cfg) {
+                            input.value = formatShortcutLabel(action, cfg);
+                            input.dataset.config = JSON.stringify(cfg);
+                        }
+                    }
+                    const sepInput = dom.settingsSeparatorInput;
+                    if (sepInput) sepInput.value = loadSeparator();
+                }
+
+                on(document, 'click', (e) => {
+                    const input = e.target.closest('.settings-shortcut-input');
+                    if (!input || !settingsPopover.contains(input)) return;
+                    if (input.classList.contains('listening')) {
+                        // Re-clicking same input cancels listening
+                        input.classList.remove('listening');
+                        delete input.dataset.listenning;
+                        input.value = input.dataset.previousValue || '';
+                        listeningShortcutsActive = false;
+                        return;
+                    }
+                    input.dataset.previousValue = input.value;
+                    input.classList.add('listening');
+                    input.value = 'Press keys...';
+                    input.dataset.listenning = 'true';
+                    listeningShortcutsActive = true;
+                });
+
+                on(document, 'keydown', (e) => {
+                    const listeningInput = document.querySelector('.settings-shortcut-input.listening');
+                    if (!listeningInput) return;
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                
+                    const action = listeningInput.dataset.action;
+                    const currentShortcuts = loadShortcuts();
+                    const existingCfg = currentShortcuts[action];
+                    const cfg = existingCfg ? { ...existingCfg } : { ...DEFAULT_SHORTCUTS[action] };
+                
+                    if (e.key === 'Escape') {
+                        listeningInput.classList.remove('listening');
+                        delete listeningInput.dataset.listenning;
+                        listeningShortcutsActive = false;
+                        if (existingCfg) {
+                            listeningInput.value = formatShortcutLabel(action, existingCfg);
+                        }
+                        return;
+                    }
+                
+                    if (e.key === 'Delete' || e.key === 'Backspace') {
+                        cfg.disabled = true;
+                        const label = 'Disabled';
+                        listeningInput.value = label;
+                        listeningInput.dataset.config = JSON.stringify(cfg);
+                        listeningInput.classList.remove('listening');
+                        delete listeningInput.dataset.listenning;
+                        listeningShortcutsActive = false;
+                        const shortcuts = loadShortcuts();
+                        shortcuts[action] = cfg;
+                        saveShortcuts(shortcuts);
+                        return;
+                    }
+                
+                    cfg.key = e.key;
+                    cfg.ctrl = e.ctrlKey || e.metaKey;
+                    delete cfg.disabled;
+                
+                    const label = formatShortcutLabel(action, cfg);
+                    listeningInput.value = label;
+                    listeningInput.dataset.config = JSON.stringify(cfg);
+                    listeningInput.classList.remove('listening');
+                    delete listeningInput.dataset.listenning;
+                    listeningShortcutsActive = false;
+                
+                    const shortcuts = loadShortcuts();
+                    shortcuts[action] = cfg;
+                    saveShortcuts(shortcuts);
+                });
+
+                /* --- Apply Settings Confirmation --- */
+                on(dom.settingsConfirmBtn, 'click', () => {
+                    const sepInput = dom.settingsSeparatorInput;
+                    if (sepInput) saveSeparator(sepInput.value);
+                    const settingsPopover = dom.settingsPopover;
+                    settingsPopover.classList.add('hidden');
+                    showToast('Settings saved');
+                });
+
+                on(dom.settingsCancelBtn, 'click', () => {
+                    dom.settingsPopover.classList.add('hidden');
+                });
 
                 /* --- Sidebar Toggle --- */
                 function applySidebarState() {
@@ -2678,23 +3699,71 @@
                         icon.className = 'ph-bold ph-sidebar-simple';
                     }
                 }
-                document.getElementById('sidebar-toggle-btn').onclick = () => {
+                on(dom.sidebarToggleBtn, 'click', () => {
                     const collapsed = document.body.classList.toggle('sidebar-collapsed');
                     const icon = document.querySelector('#sidebar-toggle-btn i');
                     if (icon) {
                         icon.className = collapsed ? 'ph-bold ph-sidebar' : 'ph-bold ph-sidebar-simple';
                     }
-                };
+                });
                 applySidebarState();
 
+                /* --- Preprompt Expand Bubble --- */
+                const prepromptBubbleWrapper = document.getElementById('preprompt-bubble-wrapper');
+                const _prepromptBubbleInner = document.getElementById('preprompt-bubble-inner');
+                const prepromptBubbleCancel = document.getElementById('preprompt-bubble-cancel');
+                const prepromptBubbleConfirm = document.getElementById('preprompt-bubble-confirm');
+                const prepromptBubbleTextarea = document.getElementById('preprompt-bubble-textarea');
+                const prepromptBubbleHeader = document.getElementById('preprompt-bubble-header');
+                const PREPROMPT_BUBBLE_KEY = 'ymind-preprompt-bubble-state';
+
+                function openPrepromptBubble() {
+                    prepromptBubbleTextarea.value = loadPrePrompt();
+                    prepromptBubbleWrapper.classList.remove('hidden');
+                    prepromptBubbleTextarea.focus();
+                }
+
+                function closePrepromptBubble() {
+                    prepromptBubbleWrapper.classList.add('hidden');
+                }
+
+                function confirmPrepromptBubble() {
+                    const text = prepromptBubbleTextarea.value;
+                    savePrePrompt(text);
+                    closePrepromptBubble();
+                    showToast('Pre-prompt saved');
+                }
+
+                on(prepromptBubbleCancel, 'click', closePrepromptBubble);
+                on(prepromptBubbleConfirm, 'click', confirmPrepromptBubble);
+
+                /* --- Preprompt Bubble Drag & Resize --- */
+                makeDragResizable(prepromptBubbleWrapper, prepromptBubbleHeader, PREPROMPT_BUBBLE_KEY);
+
                 /* --- Share Modal Handlers --- */
-                dom.shareBtn.onclick = renderShareModal;
-                dom.closeModalBtn.onclick = () => dom.shareModal.classList.add('hidden');
-                dom.addCollaboratorBtn.onclick = addCollaborator;
+                
+                on(dom.closeModalBtn, 'click', () => dom.shareModal.classList.add('hidden'));
+                on(dom.addCollaboratorBtn, 'click', addCollaborator);
 
                 /* --- Brainstorm Bubble Handlers --- */
-                dom.bubbleCloseBtn.onclick = handleBubbleClose;
-                dom.bubbleContent.addEventListener('mouseup', function() {
+                // Bulletproof close button binding
+                const forceCloseBubble = function() {
+                    const w = document.getElementById('bubble-resize-wrapper');
+                    if (w) w.classList.add('hidden');
+                };
+                const closeBtn = document.getElementById('bubble-close-btn');
+                if (closeBtn) {
+                    on(closeBtn, 'click', function(e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        forceCloseBubble();
+                    });
+                    // Also mousedown to block header drag
+                    on(closeBtn, 'mousedown', function(e) {
+                        e.stopImmediatePropagation();
+                    });
+                }
+                on(dom.bubbleContent, 'mouseup', () => {
                     const selection = window.getSelection().toString().trim();
                     if (selection) {
                         navigator.clipboard.writeText(selection);
@@ -2704,31 +3773,31 @@
                         }, 1500);
                     }
                 });
-                dom.bubbleRawBtn.onclick = () => { bubbleViewMode = 'raw'; updateBubbleViewButtons(); updateBubbleContent(); };
-                dom.bubblePreviewBtn.onclick = () => { bubbleViewMode = 'preview'; updateBubbleViewButtons(); updateBubbleContent(); };
-                dom.bubbleCopyBtn.onclick = () => {
+                on(dom.bubbleRawBtn, 'click', () => { bubbleViewMode = 'raw'; updateBubbleViewButtons(); updateBubbleContent(); });
+                on(dom.bubblePreviewBtn, 'click', () => { bubbleViewMode = 'preview'; updateBubbleViewButtons(); updateBubbleContent(); });
+                on(dom.bubbleCopyBtn, 'click', () => {
                     if (brainstormResultText) {
                         navigator.clipboard.writeText(brainstormResultText);
                         showToast('AI output copied to clipboard');
                     }
-                };
-                document.getElementById('bubble-prev-btn').onclick = () => navigateAi(-1);
-                document.getElementById('bubble-next-btn').onclick = () => navigateAi(1);
+                });
+                on(dom.bubblePrevBtn, 'click', () => navigateAi(-1));
+                on(dom.bubbleNextBtn, 'click', () => navigateAi(1));
 
                 /* --- Model Selector - Restore Preferences --- */
                 const savedProvider = localStorage.getItem('ymind_preferred_provider');
                 const savedModel = localStorage.getItem('ymind_preferred_model');
                 if (savedProvider) {
                     currentProvider = savedProvider;
-                    document.querySelectorAll('.provider-item').forEach(el => {
+                    for (const el of document.querySelectorAll('.provider-item')) {
                         el.classList.toggle('selected', el.dataset.provider === savedProvider);
-                    });
+                    }
                 }
                 if (savedModel) {
                     currentModel = savedModel;
-                    document.querySelectorAll('.model-item').forEach(el => {
+                    for (const el of document.querySelectorAll('.model-item')) {
                         el.classList.toggle('selected', el.dataset.model === savedModel);
-                    });
+                    }
                 }
                 updateModelLabel();
 
@@ -2744,14 +3813,14 @@
                     localStorage.setItem('ymind_preferred_model', model);
 
                     // Update provider items
-                    document.querySelectorAll('.provider-item').forEach(el => {
+                    for (const el of document.querySelectorAll('.provider-item')) {
                         el.classList.toggle('selected', el.dataset.provider === provider);
-                    });
+                    }
 
                     // Update model items
-                    document.querySelectorAll('.model-item').forEach(el => {
+                    for (const el of document.querySelectorAll('.model-item')) {
                         el.classList.toggle('selected', el.dataset.model === model);
-                    });
+                    }
 
                     updateModelLabel();
                     closeModelDropdown();
@@ -2763,30 +3832,26 @@
 
                 function closeModelDropdown() {
                     modelSelector.classList.remove('open');
-                    document.querySelectorAll('.provider-item').forEach(el => el.classList.remove('submenu-open'));
+                    for (const el of document.querySelectorAll('.provider-item')) el.classList.remove('submenu-open');
                 }
 
                 // Toggle dropdown on button click
-                modelSelectorBtn.addEventListener('click', (e) => {
+                on(modelSelectorBtn, 'click', (e) => {
                     e.stopPropagation();
                     modelSelector.classList.contains('open') ? closeModelDropdown() : openModelDropdown();
                 });
 
                 // Close dropdown when clicking outside
-                document.addEventListener('click', (e) => {
-                    if (!modelSelector.contains(e.target)) {
-                        closeModelDropdown();
-                    }
-                });
+                closeOnClickOutside(modelSelector, null, closeModelDropdown);
 
                 // Provider hover handling
-                document.querySelectorAll('.provider-item').forEach(providerEl => {
-                    providerEl.addEventListener('mouseenter', () => {
-                        document.querySelectorAll('.provider-item').forEach(el => el.classList.remove('submenu-open'));
+                for (const providerEl of document.querySelectorAll('.provider-item')) {
+                    on(providerEl, 'mouseenter', () => {
+                        for (const el of document.querySelectorAll('.provider-item')) el.classList.remove('submenu-open');
                         providerEl.classList.add('submenu-open');
                     });
 
-                    providerEl.addEventListener('click', () => {
+                    on(providerEl, 'click', () => {
                         const provider = providerEl.dataset.provider;
                         // Get first model from the submenu
                         const firstModelEl = providerEl.querySelector('.model-item');
@@ -2795,20 +3860,20 @@
                             selectProvider(provider, model);
                         }
                     });
-                });
+                }
 
                 // Model item click handling
-                document.querySelectorAll('.model-item').forEach(modelEl => {
-                    modelEl.addEventListener('click', (e) => {
+                for (const modelEl of document.querySelectorAll('.model-item')) {
+                    on(modelEl, 'click', (e) => {
                         e.stopPropagation();
                         const provider = modelEl.closest('.provider-item').dataset.provider;
                         const model = modelEl.dataset.model;
                         selectProvider(provider, model);
                     });
-                });
+                }
 
                 /* --- AI History --- */
-                dom.aiHistoryBtn.addEventListener('click', (e) => {
+                on(dom.aiHistoryBtn, 'click', (e) => {
                     e.stopPropagation();
                     dom.aiHistoryMenu.classList.toggle('hidden');
                     if (!dom.aiHistoryMenu.classList.contains('hidden')) {
@@ -2816,55 +3881,72 @@
                     }
                 });
 
-                document.addEventListener('click', (e) => {
-                    if (!dom.aiHistoryMenu.contains(e.target) && e.target !== dom.aiHistoryBtn) {
-                        dom.aiHistoryMenu.classList.add('hidden');
-                    }
+                closeOnClickOutside(dom.aiHistoryMenu, dom.aiHistoryBtn, () => {
+                    dom.aiHistoryMenu.classList.add('hidden');
                 });
+
+                function createHistoryItem(data, handlers) {
+                    const item = document.createElement('div');
+                    item.className = 'ai-history-item';
+                    item.dataset.index = data.index;
+                    item.dataset.hiddenId = data.hiddenId;
+                    item.dataset.questionEndPos = data.questionEndPos;
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'item-content';
+                    contentDiv.innerHTML = `<div class="question-preview">${escapeHtml(data.question)}...</div><div class="timestamp">${data.timestamp}</div>`;
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'history-delete-btn';
+                    deleteBtn.title = 'Delete';
+                    deleteBtn.innerHTML = '<i class="ph-bold ph-x"></i>';
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        handlers.onDelete();
+                    });
+                    item.appendChild(contentDiv);
+                    item.appendChild(deleteBtn);
+                    item.addEventListener('mouseenter', handlers.onMouseEnter);
+                    item.addEventListener('mouseleave', handlers.onMouseLeave);
+                    item.addEventListener('click', (e) => {
+                        if (e.target.closest('.history-delete-btn')) return;
+                        handlers.onClick();
+                    });
+                    return item;
+                }
 
                 async function loadAiHistory() {
                     if (!activeNoteId) {
-                        dom.aiHistoryMenu.innerHTML = '<div class="ai-history-item">No note selected</div>';
+                        dom.aiHistoryContent.innerHTML = '<div class="ai-history-item">No note selected</div>';
                         return;
                     }
                     const { result } = await db.get(activeNoteId);
-                    if (!result || !result.value || !result.value.aiResponses) {
-                        dom.aiHistoryMenu.innerHTML = '<div class="ai-history-item">No AI responses yet</div>';
+                    if (!result?.value?.aiResponses) {
+                        dom.aiHistoryContent.innerHTML = '<div class="ai-history-item">No AI responses yet</div>';
                         return;
                     }
                     const responses = [...result.value.aiResponses].reverse();
-                    dom.aiHistoryMenu.innerHTML = '';
+                    dom.aiHistoryContent.innerHTML = '';
                     currentAiOutputs = [];
                     currentAiIndex = 0;
                     for (const r of responses) {
                         const { result: hiddenNote } = r.id ? await db.get(r.id) : { result: null };
                         const output = hiddenNote?.value?.content || 'AI output not found';
                         const question = output.substring(0, 50);
-                        const item = document.createElement('div');
-                        item.className = 'ai-history-item';
-                        item.dataset.index = currentAiOutputs.length;
-                        item.dataset.hiddenId = r.id;
-                        item.dataset.questionEndPos = r.questionEndPos;
-                        const contentDiv = document.createElement('div');
-                        contentDiv.className = 'item-content';
-                        contentDiv.innerHTML = `<div class="question-preview">${escapeHtml(question)}...</div><div class="timestamp">${new Date(r.timestamp).toLocaleString()}</div>`;
-                        const deleteBtn = document.createElement('button');
-                        deleteBtn.className = 'history-delete-btn';
-                        deleteBtn.title = 'Delete';
-                        deleteBtn.innerHTML = '<i class="ph-bold ph-x"></i>';
-                        deleteBtn.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            deleteAiHistoryItem(r.id);
-                        });
-                        item.appendChild(contentDiv);
-                        item.appendChild(deleteBtn);
-                        item.addEventListener('mouseenter', () => highlightQuestionMark(r.questionEndPos));
-                        item.addEventListener('mouseleave', () => clearHighlight());
-                        item.addEventListener('click', (e) => {
-                            if (e.target.closest('.history-delete-btn')) return;
-                            openAiBubble(r.id, r.questionEndPos);
-                        });
-                        dom.aiHistoryMenu.appendChild(item);
+                        const item = createHistoryItem(
+                            {
+                                index: String(currentAiOutputs.length),
+                                hiddenId: r.id,
+                                questionEndPos: String(r.questionEndPos),
+                                question: question,
+                                timestamp: new Date(r.timestamp).toLocaleString()
+                            },
+                            {
+                                onDelete: () => deleteAiHistoryItem(r.id),
+                                onMouseEnter: () => highlightQuestionMark(r.questionEndPos),
+                                onMouseLeave: () => clearHighlight(),
+                                onClick: () => openAiBubble(r.id, r.questionEndPos)
+                            }
+                        );
+                        dom.aiHistoryContent.appendChild(item);
                         currentAiOutputs.push({ id: r.id, questionEndPos: r.questionEndPos });
                     }
                     updateBubbleNav();
@@ -2873,7 +3955,7 @@
                 async function deleteAiHistoryItem(hiddenNoteId) {
                     if (!activeNoteId) return;
                     const { result } = await db.get(activeNoteId);
-                    if (!result || !result.value || !result.value.aiResponses) return;
+                    if (!result?.value?.aiResponses) return;
                     const note = result.value;
                     const idx = note.aiResponses.findIndex(r => r.id === hiddenNoteId);
                     if (idx === -1) return;
@@ -2888,7 +3970,7 @@
                 async function openMostRecentAi() {
                     if (!activeNoteId) return;
                     const { result } = await db.get(activeNoteId);
-                    if (!result || !result.value || !result.value.aiResponses || result.value.aiResponses.length === 0) {
+                    if (!result?.value?.aiResponses || result.value.aiResponses.length === 0) {
                         showToast('No AI response to show');
                         return;
                     }
@@ -2905,9 +3987,9 @@
 
                 function updateBubbleNav() {
                     const total = currentAiOutputs.length;
-                    const indicator = document.getElementById('bubble-nav-indicator');
-                    const prevBtn = document.getElementById('bubble-prev-btn');
-                    const nextBtn = document.getElementById('bubble-next-btn');
+                    const indicator = dom.bubbleNavIndicator;
+                    const prevBtn = dom.bubblePrevBtn;
+                    const nextBtn = dom.bubbleNextBtn;
                     if (!indicator || !prevBtn || !nextBtn) return;
                     if (total <= 1) {
                         indicator.style.display = 'none';
@@ -2923,9 +4005,9 @@
                     }
                 }
 
-                async function openAiBubble(hiddenNoteId, questionEndPos) {
+                async function openAiBubble(hiddenNoteId, _questionEndPos) {
                     const { result } = await db.get(hiddenNoteId);
-                    if (!result || !result.value) {
+                    if (!result?.value) {
                         showToast('AI output not found');
                         return;
                     }
@@ -2935,7 +4017,7 @@
                     updateBubbleViewButtons();
                     updateBubbleContent();
                     updateBubbleNav();
-                    document.getElementById('bubble-resize-wrapper').classList.remove('hidden');
+                    dom.bubbleResizeWrapper.classList.remove('hidden');
                     dom.aiHistoryMenu.classList.add('hidden');
                 }
 
@@ -2961,247 +4043,53 @@
                 }
 
                 /* --- Keyboard Shortcuts --- */
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && batchMode) {
+                on(document, 'keydown', (e) => {
+                    // Skip when shortcut input is in listening mode
+                    if (document.querySelector('.settings-shortcut-input.listening')) return;
+                
+                    const shortcuts = loadShortcuts();
+                
+                    if (!shortcuts.exitBatchMode.disabled && e.key === shortcuts.exitBatchMode.key && batchMode) {
                         e.preventDefault();
                         toggleBatchMode();
                         return;
                     }
-                    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                    if (!shortcuts.openAiHistory.disabled && (e.ctrlKey || e.metaKey) && e.key === shortcuts.openAiHistory.key) {
                         e.preventDefault();
                         openMostRecentAi();
+                        return;
                     }
-                    if (e.key === 'ArrowLeft' && currentAiOutputs.length > 0 && !document.getElementById('bubble-resize-wrapper').classList.contains('hidden')) {
+                    if (!shortcuts.navigateAiPrev.disabled && e.key === shortcuts.navigateAiPrev.key && currentAiOutputs.length > 0 && !dom.bubbleResizeWrapper.classList.contains('hidden')) {
                         e.preventDefault();
                         navigateAi(-1);
+                        return;
                     }
-                    if (e.key === 'ArrowRight' && currentAiOutputs.length > 0 && !document.getElementById('bubble-resize-wrapper').classList.contains('hidden')) {
+                    if (!shortcuts.navigateAiNext.disabled && e.key === shortcuts.navigateAiNext.key && currentAiOutputs.length > 0 && !dom.bubbleResizeWrapper.classList.contains('hidden')) {
                         e.preventDefault();
                         navigateAi(1);
+                        return;
                     }
                 });
 
                 /* --- Bubble Drag & Resize --- */
-                const bubble = dom.brainstormBubble;
-                const bubbleWrapper = document.getElementById('bubble-resize-wrapper');
-                const bubbleHeader = bubble.querySelector('.bubble-header');
+                const bubbleWrapper = dom.bubbleResizeWrapper;
+                const bubbleHeader = dom.brainstormBubble.querySelector('.bubble-header');
                 const BUBBLE_STORAGE_KEY = 'ymind-bubble-state';
 
-                let isDragging = false;
-                let isResizing = false;
-                let resizeDir = null;
-                let dragStartX, dragStartY;
-                let bubbleStartLeft, bubbleStartTop;
-                let bubbleStartWidth, bubbleStartHeight;
-
-                function initBubblePosition(wrapper) {
-                    const rect = wrapper.getBoundingClientRect();
-                    wrapper.style.left = rect.left + 'px';
-                    wrapper.style.top = rect.top + 'px';
-                    wrapper.style.bottom = 'auto';
-                    wrapper.style.transform = 'none';
-                    wrapper.style.maxHeight = '70vh';
-                }
-
-                function clampBubble(wrapper) {
-                    const rect = wrapper.getBoundingClientRect();
-                    const maxX = window.innerWidth - 20;
-                    const maxY = window.innerHeight - 20;
-                    let left = parseFloat(wrapper.style.left) || rect.left;
-                    let top = parseFloat(wrapper.style.top) || rect.top;
-
-                    if (left < 0) left = 0;
-                    if (top < 0) top = 0;
-                    if (left + rect.width > maxX) left = maxX - rect.width;
-                    if (top + rect.height > maxY) top = maxY - rect.height;
-
-                    wrapper.style.left = left + 'px';
-                    wrapper.style.top = top + 'px';
-                }
-
-                function saveBubbleState() {
-                    const rect = bubbleWrapper.getBoundingClientRect();
-                    const state = {
-                        left: rect.left,
-                        top: rect.top,
-                        width: parseFloat(bubbleWrapper.style.width) || rect.width,
-                        height: parseFloat(bubbleWrapper.style.height) || rect.height,
-                    };
-                    try {
-                        localStorage.setItem(BUBBLE_STORAGE_KEY, JSON.stringify(state));
-                    } catch (e) { /* ignore */ }
-                }
-
-                function loadBubbleState() {
-                    try {
-                        const saved = localStorage.getItem(BUBBLE_STORAGE_KEY);
-                        if (saved) {
-                            const state = JSON.parse(saved);
-                            bubbleWrapper.style.left = state.left + 'px';
-                            bubbleWrapper.style.top = state.top + 'px';
-                            bubbleWrapper.style.bottom = 'auto';
-                            bubbleWrapper.style.transform = 'none';
-                            bubbleWrapper.style.width = Math.max(300, state.width) + 'px';
-                            bubbleWrapper.style.height = Math.max(200, state.height) + 'px';
-                            bubbleWrapper.style.maxHeight = 'none';
-                            bubbleWrapper.style.maxWidth = 'none';
-                            return true;
-                        }
-                    } catch (e) { /* ignore */ }
-                    return false;
-                }
-
-                let bubbleInitialized = false;
-                const bubbleObserver = new MutationObserver(() => {
-                    if (!bubbleWrapper.classList.contains('hidden') && !bubbleInitialized) {
-                        bubbleInitialized = true;
-                        if (!loadBubbleState()) {
-                            initBubblePosition(bubbleWrapper);
-                        }
-                        clampBubble(bubbleWrapper);
-                    }
-                    if (bubbleWrapper.classList.contains('hidden')) {
-                        bubbleInitialized = false;
-                    }
-                });
-                bubbleObserver.observe(bubbleWrapper, { attributes: true, attributeFilter: ['class'] });
-
-                bubbleHeader.addEventListener('mousedown', (e) => {
-                    if (e.target.closest('button') || e.target.closest('.resize-handle')) return;
-
-                    isDragging = true;
-                    dragStartX = e.clientX;
-                    dragStartY = e.clientY;
-                    const rect = bubbleWrapper.getBoundingClientRect();
-                    bubbleStartLeft = rect.left;
-                    bubbleStartTop = rect.top;
-                    bubbleWrapper.classList.add('dragging');
-                    document.body.style.userSelect = 'none';
-
-                    if (bubbleWrapper.style.bottom !== 'auto') {
-                        initBubblePosition(bubbleWrapper);
-                        const r2 = bubbleWrapper.getBoundingClientRect();
-                        bubbleStartLeft = r2.left;
-                        bubbleStartTop = r2.top;
-                    }
-                });
-
-                document.addEventListener('mousemove', (e) => {
-                    if (!isDragging && !isResizing) return;
-
-                    if (isDragging) {
-                        const dx = e.clientX - dragStartX;
-                        const dy = e.clientY - dragStartY;
-                        let newLeft = bubbleStartLeft + dx;
-                        let newTop = bubbleStartTop + dy;
-
-                        const rect = bubbleWrapper.getBoundingClientRect();
-                        const maxX = window.innerWidth - 20;
-                        const maxY = window.innerHeight - 20;
-
-                        if (newLeft < 0) newLeft = 0;
-                        if (newTop < 0) newTop = 0;
-                        if (newLeft + rect.width > maxX) newLeft = maxX - rect.width;
-                        if (newTop + rect.height > maxY) newTop = maxY - rect.height;
-
-                        bubbleWrapper.style.left = newLeft + 'px';
-                        bubbleWrapper.style.top = newTop + 'px';
-                    }
-
-                    if (isResizing) {
-                        const dx = e.clientX - dragStartX;
-                        const dy = e.clientY - dragStartY;
-                        const minW = 300;
-                        const minH = 200;
-                        const maxW = window.innerWidth - 40;
-                        const maxH = window.innerHeight - 40;
-
-                        let newLeft = bubbleStartLeft;
-                        let newTop = bubbleStartTop;
-                        let newW = bubbleStartWidth;
-                        let newH = bubbleStartHeight;
-
-                        if (resizeDir.includes('e')) {
-                            newW = Math.max(minW, Math.min(maxW, bubbleStartWidth + dx));
-                        }
-                        if (resizeDir.includes('w')) {
-                            newW = Math.max(minW, Math.min(maxW, bubbleStartWidth - dx));
-                            newLeft = bubbleStartLeft + (bubbleStartWidth - newW);
-                        }
-                        if (resizeDir.includes('s')) {
-                            newH = Math.max(minH, Math.min(maxH, bubbleStartHeight + dy));
-                        }
-                        if (resizeDir.includes('n')) {
-                            newH = Math.max(minH, Math.min(maxH, bubbleStartHeight - dy));
-                            newTop = bubbleStartTop + (bubbleStartHeight - newH);
-                        }
-
-                        bubbleWrapper.style.width = newW + 'px';
-                        bubbleWrapper.style.height = newH + 'px';
-                        bubbleWrapper.style.left = newLeft + 'px';
-                        bubbleWrapper.style.top = newTop + 'px';
-                        bubbleWrapper.style.maxWidth = 'none';
-                        bubbleWrapper.style.maxHeight = 'none';
-                    }
-                });
-
-                document.addEventListener('mouseup', () => {
-                    if (isDragging) {
-                        isDragging = false;
-                        bubbleWrapper.classList.remove('dragging');
-                        document.body.style.userSelect = '';
-                        saveBubbleState();
-                    }
-                    if (isResizing) {
-                        isResizing = false;
-                        resizeDir = null;
-                        bubbleWrapper.classList.remove('resizing');
-                        document.body.style.userSelect = '';
-                        saveBubbleState();
-                    }
-                });
-
-                bubbleWrapper.querySelectorAll('.resize-handle').forEach(handle => {
-                    handle.addEventListener('mousedown', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        isResizing = true;
-                        resizeDir = handle.dataset.dir;
-                        dragStartX = e.clientX;
-                        dragStartY = e.clientY;
-                        const rect = bubbleWrapper.getBoundingClientRect();
-                        bubbleStartWidth = rect.width;
-                        bubbleStartHeight = rect.height;
-                        bubbleStartLeft = rect.left;
-                        bubbleStartTop = rect.top;
-                        bubbleWrapper.classList.add('resizing');
-                        document.body.style.userSelect = 'none';
-
-                        if (bubbleWrapper.style.bottom !== 'auto') {
-                            initBubblePosition(bubbleWrapper);
-                            const r2 = bubbleWrapper.getBoundingClientRect();
-                            bubbleStartWidth = r2.width;
-                            bubbleStartHeight = r2.height;
-                            bubbleStartLeft = r2.left;
-                            bubbleStartTop = r2.top;
-                        }
-                    });
-                });
-
-                window.addEventListener('resize', () => {
-                    if (!bubbleWrapper.classList.contains('hidden') && bubbleWrapper.style.bottom === 'auto') {
-                        clampBubble(bubbleWrapper);
-                    }
+                makeDragResizable(bubbleWrapper, bubbleHeader, BUBBLE_STORAGE_KEY, {
+                    onInit: (w) => { w.style.bottom = 'auto'; w.style.transform = 'none'; w.style.maxHeight = '70vh'; },
+                    onLoad: (w) => { w.style.bottom = 'auto'; w.style.transform = 'none'; w.style.maxHeight = 'none'; w.style.maxWidth = 'none'; },
+                    onResize: (w) => { w.style.maxWidth = 'none'; w.style.maxHeight = 'none'; },
                 });
 
             } catch (error) {
-                console.error("Failed to initialize Ymind:", error);
+                console.error('Failed to initialize Ymind:', error);
                 document.body.innerHTML = '<pre>Error: ' + error.stack + '</pre>';
             } finally {
                 dom.initialLoader.classList.add('hidden');
             }
         }
-        document.addEventListener('DOMContentLoaded', initApp);
+        on(document, 'DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
