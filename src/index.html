@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ymind - Brainstorm Notes</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web@2.0.3"></script>
+</head>
+<body>
+    <!-- ========== INITIAL LOADER ========== -->
+    <div id="initial-loader" class="loader"></div>
+
+    <!-- ========== AUTH SCREEN ========== -->
+    <section id="auth-screen" class="hidden">
+        <div class="auth-container">
+            <h1>Ymind</h1>
+            <p>Brainstorm notes powered by GenosDB.</p>
+            <textarea id="mnemonic-area" placeholder="Enter your 12-word mnemonic phrase to login or recover..." spellcheck="false"></textarea>
+            <div id="auth-actions" class="auth-actions">
+                <button type="button" id="generate-btn" class="primary"><i class="ph-bold ph-plus"></i> Generate New Identity</button>
+                <button type="button" id="login-mnemonic-btn" class="secondary">Login with Mnemonic</button>
+                <button type="button" id="login-passkey-btn" class="secondary">Login with Passkey</button>
+                <button type="button" id="copy-phrase-btn" class="secondary hidden"><i class="ph-bold ph-copy"></i> Copy Phrase</button>
+                <button type="button" id="protect-passkey-btn" class="hidden">Protect with Passkey</button>
+            </div>
+            <p id="auth-warning" class="hidden">SAVE THIS PHRASE! This is your only way to recover your account.</p>
+        </div>
+    </section>
+
+    <!-- ========== E2EE PROMPT MODAL ========== -->
+    <div id="e2ee-prompt-modal" class="e2ee-prompt-modal hidden">
+        <div class="e2ee-prompt-content">
+            <h3><i class="ph-bold ph-lock"></i> Enable E2EE Encryption?</h3>
+            <p>End-to-end encryption protects your data from relay servers. However, it disables collaboration features.</p>
+            <div class="e2ee-prompt-actions">
+                <button type="button" id="e2ee-yes-btn" class="primary">Enable E2EE</button>
+                <button type="button" id="e2ee-no-btn" class="secondary">Normal Mode</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== APP SCREEN ========== -->
+    <section id="app-screen" class="hidden">
+        <header>
+            <span class="sidebar-ymind-title">Ymind</span>
+            <span id="sidebar-user-id" class="sidebar-user-id">ID: ...</span>
+            <span id="connection-status" class="connection-status" title="P2P连接状态">
+                <span id="connection-dot"></span>
+                <span id="connection-text"></span>
+            </span>
+            <div style="flex:1;"></div>
+            <input type="search" id="search-input" placeholder="Search notes...">
+            <button type="button" id="theme-toggle-btn" class="icon-btn" title="Toggle theme"><i class="ph-bold ph-moon"></i></button>
+            <button type="button" id="settings-btn" class="icon-btn" title="Settings"><i class="ph-bold ph-gear"></i></button>
+            <button type="button" id="logout-btn" class="icon-btn" title="Logout"><i class="ph-bold ph-sign-out"></i></button>
+        </header>
+        <main>
+            <div id="notes-list-container">
+                <div class="list-tabs">
+                    <button type="button" class="list-tab active" data-tab="notes">
+                        <i class="ph-bold ph-file-text"></i> Notes
+                    </button>
+                    <button type="button" class="list-tab" data-tab="mindmaps">
+                        <i class="ph-bold ph-graph"></i> Mindmaps
+                    </button>
+                </div>
+                <div class="sidebar-top-actions">
+                    <button type="button" id="new-note-btn" class="primary" title="New Note"><i class="ph-bold ph-plus"></i></button>
+                    <button type="button" id="new-mindmap-btn" class="secondary" title="New Mind Map">
+                        <i class="ph-bold ph-graph"></i>
+                    </button>
+                    <button type="button" id="new-folder-btn" class="secondary" title="New Folder"><i class="ph-bold ph-folder"></i></button>
+                    <button type="button" id="select-btn" class="secondary" title="Batch Select"><i class="ph-bold ph-list"></i></button>
+                </div>
+                <div id="notes-list"></div>
+                <div id="batch-bar">
+                    <span id="batch-count" class="batch-count"></span>
+                    <button type="button" id="batch-delete-btn" class="icon-btn destructive" title="Delete selected"><i class="ph-bold ph-trash"></i></button>
+                    <button type="button" id="batch-export-btn" class="icon-btn secondary" title="Export selected"><i class="ph-bold ph-download-simple"></i></button>
+                    <button type="button" id="batch-share-btn" class="icon-btn secondary" title="Share selected"><i class="ph-bold ph-share-network"></i></button>
+                </div>
+                <div class="sidebar-bottom-actions">
+                    <button type="button" id="mindmap-trash-btn" class="sidebar-bottom-btn" title="Trash">
+                        <i class="ph-bold ph-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="note-editor-container">
+                <div id="editor-placeholder">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <title>Edit note icon</title>
+                        <path d="M12 20h9"></path>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                    </svg>
+                    <p>Select a note to view or create a new one.</p>
+                </div>
+                <div id="note-editor" class="hidden">
+                    <div class="editor-header">
+                        <button type="button" id="sidebar-toggle-btn" class="icon-btn" title="Toggle Sidebar"><i class="ph-bold ph-sidebar-simple"></i></button>
+                        <button type="button" id="back-btn" class="icon-btn hidden" title="Back"><i class="ph-bold ph-arrow-left"></i></button>
+                        <input type="text" id="note-title-input" placeholder="Note Title">
+                        <div class="ai-history-dropdown" id="ai-history-dropdown">
+                            <button type="button" id="ai-history-btn" class="icon-btn"><i class="ph-bold ph-brain"></i> Chat History</button>
+                            <div class="ai-history-menu hidden" id="ai-history-menu">
+                                <div class="ai-history-content" id="ai-history-content"></div>
+                            </div>
+                        </div>
+                        <div class="model-selector" id="model-selector">
+                            <button class="model-selector-btn" id="model-selector-btn" type="button">
+                                <span id="selected-model-label">DeepSeek</span>
+                                <span class="arrow">&#9660;</span>
+                            </button>
+                            <div class="model-selector-dropdown" id="model-dropdown">
+                                <div class="provider-item selected" data-provider="deepseek">
+                                    <span class="provider-name">DeepSeek</span>
+                                    <span class="sub-arrow">&#9654;</span>
+                                    <div class="model-submenu" id="submenu-deepseek">
+                                        <div class="model-item selected" data-model="deepseek-v4-flash"><span class="model-name">deepseek-v4-flash</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="deepseek-v4-pro"><span class="model-name">deepseek-v4-pro</span><span class="dot"></span></div>
+                                    </div>
+                                </div>
+                                <div class="provider-item" data-provider="openai">
+                                    <span class="provider-name">OpenAI</span>
+                                    <span class="sub-arrow">&#9654;</span>
+                                    <div class="model-submenu" id="submenu-openai">
+                                        <div class="model-item" data-model="gpt-4o-mini"><span class="model-name">gpt-4o-mini</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="gpt-4o"><span class="model-name">gpt-4o</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="gpt-4-turbo"><span class="model-name">gpt-4-turbo</span><span class="dot"></span></div>
+                                    </div>
+                                </div>
+                                <div class="provider-item" data-provider="anthropic">
+                                    <span class="provider-name">Anthropic</span>
+                                    <span class="sub-arrow">&#9654;</span>
+                                    <div class="model-submenu" id="submenu-anthropic">
+                                        <div class="model-item" data-model="claude-3-5-haiku-20241022"><span class="model-name">claude-3-5-haiku</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="claude-3-5-sonnet-20241022"><span class="model-name">claude-3-5-sonnet</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="claude-3-opus-20240229"><span class="model-name">claude-3-opus</span><span class="dot"></span></div>
+                                    </div>
+                                </div>
+                                <div class="provider-item" data-provider="qwen">
+                                    <span class="provider-name">Qwen</span>
+                                    <span class="sub-arrow">&#9654;</span>
+                                    <div class="model-submenu" id="submenu-qwen">
+                                        <div class="model-item" data-model="qwen-turbo-latest"><span class="model-name">qwen-turbo</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="qwen-plus-latest"><span class="model-name">qwen-plus</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="qwen-max-latest"><span class="model-name">qwen-max</span><span class="dot"></span></div>
+                                    </div>
+                                </div>
+                                <div class="provider-item" data-provider="minimax">
+                                    <span class="provider-name">MiniMax</span>
+                                    <span class="sub-arrow">&#9654;</span>
+                                    <div class="model-submenu" id="submenu-minimax">
+                                        <div class="model-item" data-model="abab6.5s-chat"><span class="model-name">abab6.5s-chat</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="abab6.5-chat"><span class="model-name">abab6.5-chat</span><span class="dot"></span></div>
+                                    </div>
+                                </div>
+                                <div class="provider-item" data-provider="google">
+                                    <span class="provider-name">Gemini</span>
+                                    <span class="sub-arrow">&#9654;</span>
+                                    <div class="model-submenu" id="submenu-google">
+                                        <div class="model-item" data-model="gemini-1.5-flash-latest"><span class="model-name">gemini-1.5-flash</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="gemini-1.5-pro-latest"><span class="model-name">gemini-1.5-pro</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="gemini-2.0-flash-exp"><span class="model-name">gemini-2.0-flash</span><span class="dot"></span></div>
+                                    </div>
+                                </div>
+                                <div class="provider-item" data-provider="groq">
+                                    <span class="provider-name">Groq</span>
+                                    <span class="sub-arrow">&#9654;</span>
+                                    <div class="model-submenu" id="submenu-groq">
+                                        <div class="model-item" data-model="llama-3.1-8b-instant"><span class="model-name">llama-3.1-8b</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="llama-3.1-70b-versatile"><span class="model-name">llama-3.1-70b</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="mixtral-8x7b-32768"><span class="model-name">mixtral-8x7b</span><span class="dot"></span></div>
+                                    </div>
+                                </div>
+                                <div class="provider-item" data-provider="mistral">
+                                    <span class="provider-name">Mistral</span>
+                                    <span class="sub-arrow">&#9654;</span>
+                                    <div class="model-submenu" id="submenu-mistral">
+                                        <div class="model-item" data-model="mistral-small-latest"><span class="model-name">mistral-small</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="mistral-medium-latest"><span class="model-name">mistral-medium</span><span class="dot"></span></div>
+                                        <div class="model-item" data-model="mistral-large-latest"><span class="model-name">mistral-large</span><span class="dot"></span></div>
+                                    </div>
+                                </div>
+                                <div class="provider-item" data-provider="togetherai">
+                                    <span class="provider-name">TogetherAI</span>
+                                    <span class="sub-arrow">&#9654;</span>
+                                    <div class="model-submenu" id="submenu-togetherai">
+                                        <div class="model-item" data-model="meta-llama/Llama-3.1-8B-Instruct-Turbo"><span class="model-name">llama-3.1-8b</span><span class="dot"></span></div>
+                                    </div>
+                                </div>
+                                <div class="provider-item" data-provider="fireworksai">
+                                    <span class="provider-name">FireworksAI</span>
+                                    <span class="sub-arrow">&#9654;</span>
+                                    <div class="model-submenu" id="submenu-fireworksai">
+                                        <div class="model-item" data-model="accounts/fireworks/models/llama-v3p1-8b-instruct"><span class="model-name">llama-v3p1-8b</span><span class="dot"></span></div>
+                                    </div>
+                                </div>
+                                <div class="provider-item" data-provider="openrouter">
+                                    <span class="provider-name">OpenRouter</span>
+                                    <span class="sub-arrow">&#9654;</span>
+                                    <div class="model-submenu" id="submenu-openrouter">
+                                        <div class="model-item" data-model="openai/gpt-4o-mini"><span class="model-name">gpt-4o-mini</span><span class="dot"></span></div>
+                                    </div>
+                                </div>
+                                <div class="provider-item" data-provider="cohere">
+                                    <span class="provider-name">Cohere</span>
+                                    <span class="sub-arrow">&#9654;</span>
+                                    <div class="model-submenu" id="submenu-cohere">
+                                        <div class="model-item" data-model="command-r-plus"><span class="model-name">command-r-plus</span><span class="dot"></span></div>
+                                    </div>
+                                </div>
+                                <div class="provider-item" data-provider="perplexity">
+                                    <span class="provider-name">Perplexity</span>
+                                    <span class="sub-arrow">&#9654;</span>
+                                    <div class="model-submenu" id="submenu-perplexity">
+                                        <div class="model-item" data-model="sonar"><span class="model-name">sonar</span><span class="dot"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="preview-btn" class="secondary"><i class="ph-bold ph-eye"></i> Preview</button>
+
+                        <button type="button" id="delete-btn" class="destructive"><i class="ph-bold ph-trash"></i> Delete</button>
+                    </div>
+                    <div id="note-editor-content" style="display:flex;flex:1;overflow:hidden;">
+                        <textarea id="note-content-input" placeholder="Start writing... Supports Markdown.&#10;&#10;Tip: Type your question, then press Enter twice to brainstorm with AI."></textarea>
+                        <div id="split-divider" class="split-divider"></div>
+                        <div id="note-preview" class="hidden"></div>
+                    </div>
+                    <div id="mindmap-container" class="hidden">
+                        <button type="button" id="mindmap-back-btn" class="mindmap-back-btn" title="返回上一步">
+                            <i class="ph-bold ph-arrow-u-up-left"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </section>
+
+    <!-- ========== SETTINGS POPOVER ========== -->
+    <div id="settings-popover" class="settings-popover hidden">
+        <div class="settings-section" data-section="shortcuts">
+            <button type="button" class="settings-section-header">
+                <span>Keyboard Shortcuts</span>
+                <i class="ph-bold ph-caret-down settings-section-arrow"></i>
+            </button>
+            <div class="settings-section-body hidden">
+                <div class="settings-row">
+                    <span class="settings-label">Brainstorm (double press)</span>
+                    <input type="text" class="settings-shortcut-input" data-action="brainstormDoubleEnter" readonly placeholder="Enter×2">
+                </div>
+                <div class="settings-row">
+                    <span class="settings-label">Brainstorm (region)</span>
+                    <input type="text" class="settings-shortcut-input" data-action="brainstormCtrlEnter" readonly placeholder="Ctrl+Enter">
+                </div>
+                <div class="settings-row">
+                    <span class="settings-label">Chat History</span>
+                    <input type="text" class="settings-shortcut-input" data-action="openAiHistory" readonly placeholder="Ctrl+S">
+                </div>
+                <div class="settings-row">
+                    <span class="settings-label">Exit Batch Mode</span>
+                    <input type="text" class="settings-shortcut-input" data-action="exitBatchMode" readonly placeholder="Escape">
+                </div>
+                <div class="settings-row">
+                    <span class="settings-label">Previous AI Response</span>
+                    <input type="text" class="settings-shortcut-input" data-action="navigateAiPrev" readonly placeholder="ArrowLeft">
+                </div>
+                <div class="settings-row">
+                    <span class="settings-label">Next AI Response</span>
+                    <input type="text" class="settings-shortcut-input" data-action="navigateAiNext" readonly placeholder="ArrowRight">
+                </div>
+            </div>
+        </div>
+        <div class="settings-section" data-section="separator">
+            <button type="button" class="settings-section-header">
+                <span>Custom Separator</span>
+                <i class="ph-bold ph-caret-down settings-section-arrow"></i>
+            </button>
+            <div class="settings-section-body hidden">
+                <div class="settings-row">
+                    <span class="settings-label">Separator character</span>
+                    <input type="text" id="settings-separator-input" class="settings-text-input" maxlength="10" placeholder="? (default)">
+                </div>
+                <p class="settings-hint">Used to mark where your question starts. Default: ?</p>
+            </div>
+        </div>
+        <div class="settings-section" data-section="preprompt">
+            <button type="button" class="settings-section-header">
+                <span>Pre-prompt Prefix</span>
+            </button>
+            <div class="settings-section-body hidden">
+            </div>
+        </div>
+        <div class="settings-section" data-section="mindmap-prompt">
+            <button type="button" class="settings-section-header">
+                <span>Mindmap AI Prompts</span>
+                <i class="ph-bold ph-caret-down settings-section-arrow"></i>
+            </button>
+            <div class="settings-section-body hidden">
+                <div class="settings-row">
+                    <span class="settings-label">Left Expand (前置知识)</span>
+                    <textarea class="settings-textarea" id="mindmap-left-preprompt" rows="4" placeholder="AI 扩展左侧节点时的系统提示词..."></textarea>
+                </div>
+                <div class="settings-row">
+                    <span class="settings-label">Right Expand (深入探索)</span>
+                    <textarea class="settings-textarea" id="mindmap-right-preprompt" rows="4" placeholder="AI 扩展右侧节点时的系统提示词..."></textarea>
+                </div>
+                <div class="settings-row">
+                    <span class="settings-label">Reset Node (节点重置)</span>
+                    <textarea class="settings-textarea" id="mindmap-reset-preprompt" rows="4" placeholder="AI 重新生成节点内容时的系统提示词..."></textarea>
+                </div>
+                <div class="settings-row" style="justify-content: flex-end; gap: 8px;">
+                    <button type="button" id="mindmap-prompt-cancel" class="secondary">Cancel</button>
+                    <button type="button" id="mindmap-prompt-save" class="primary">Save</button>
+                </div>
+            </div>
+        </div>
+        <div class="settings-confirm-row">
+            <button type="button" id="settings-cancel-btn" class="icon-btn" title="Cancel"><i class="ph-bold ph-x"></i></button>
+            <button type="button" id="settings-confirm-btn" class="primary" title="Apply" style="padding:8px 14px; min-width:38px; min-height:38px; font-size:0.95rem;"><i class="ph-bold ph-check" style="margin:0;"></i></button>
+        </div>
+    </div>
+
+    <!-- ========== MINDMAP TRASH MODAL ========== -->
+    <div id="mindmap-trash-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Mindmap Trash</h3>
+                <button type="button" class="modal-close" id="mindmap-trash-close">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="mindmap-trash-list">
+                <div class="trash-empty">Trash is empty</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== PREPROMPT EDIT BUBBLE ========== -->
+    <div id="preprompt-bubble-wrapper" class="preprompt-bubble-wrapper hidden">
+        <div id="preprompt-bubble-inner" class="preprompt-bubble-inner">
+            <div class="bubble-header" id="preprompt-bubble-header">
+                <span class="bubble-title"><i class="ph-bold ph-textbox"></i> Pre-prompt</span>
+            </div>
+            <div class="preprompt-bubble-body">
+                <textarea id="preprompt-bubble-textarea" class="preprompt-bubble-textarea" placeholder="You are a helpful assistant..."></textarea>
+            </div>
+            <div class="bubble-actions">
+                <button type="button" id="preprompt-bubble-cancel" class="secondary">Cancel</button>
+                <button type="button" id="preprompt-bubble-confirm" class="primary"><i class="ph-bold ph-check"></i> Confirm</button>
+            </div>
+        </div>
+        <!-- Resize handles (4 edges + 4 corners) -->
+        <div class="resize-handle resize-edge-top" data-dir="n"></div>
+        <div class="resize-handle resize-edge-bottom" data-dir="s"></div>
+        <div class="resize-handle resize-edge-left" data-dir="w"></div>
+        <div class="resize-handle resize-edge-right" data-dir="e"></div>
+        <div class="resize-handle resize-corner resize-corner-tl" data-dir="nw"></div>
+        <div class="resize-handle resize-corner resize-corner-tr" data-dir="ne"></div>
+        <div class="resize-handle resize-corner resize-corner-bl" data-dir="sw"></div>
+        <div class="resize-handle resize-corner resize-corner-br" data-dir="se"></div>
+    </div>
+
+    <!-- ========== BRAINSTORM BUBBLE ========== -->
+    <div class="bubble-resize-wrapper hidden" id="bubble-resize-wrapper">
+        <div id="brainstorm-bubble">
+            <div class="bubble-header">
+                <span class="bubble-title"><i class="ph-bold ph-brain"></i> AI Response</span>
+                <div class="bubble-header-actions">
+                    <div class="bubble-view-toggle">
+                        <button type="button" id="bubble-preview-btn" class="bubble-view-btn active"><i class="ph-bold ph-eye"></i></button>
+                        <button type="button" id="bubble-raw-btn" class="bubble-view-btn"><i class="ph-bold ph-code"></i></button>
+                    </div>
+                    <button type="button" class="bubble-close" id="bubble-close-btn" title="Close"><i class="ph-bold ph-x"></i></button>
+                </div>
+            </div>
+            <div class="bubble-content" id="bubble-content"></div>
+            <div class="bubble-actions">
+                <small id="bubble-hint">Select text to copy</small>
+                <div class="bubble-navigation">
+                    <button type="button" id="bubble-prev-btn" class="icon-btn" title="Previous (←)" style="padding:4px 6px;"><i class="ph-bold ph-arrow-left"></i></button>
+                    <span id="bubble-nav-indicator">1 / 3</span>
+                    <button type="button" id="bubble-next-btn" class="icon-btn" title="Next (→)" style="padding:4px 6px;"><i class="ph-bold ph-arrow-right"></i></button>
+                </div>
+                <button type="button" id="bubble-copy-btn" class="secondary"><i class="ph-bold ph-copy"></i> Copy</button>
+            </div>
+        </div>
+        <!-- Resize handles (4 edges + 4 corners) -->
+        <div class="resize-handle resize-edge-top" data-dir="n"></div>
+        <div class="resize-handle resize-edge-bottom" data-dir="s"></div>
+        <div class="resize-handle resize-edge-left" data-dir="w"></div>
+        <div class="resize-handle resize-edge-right" data-dir="e"></div>
+        <div class="resize-handle resize-corner resize-corner-tl" data-dir="nw"></div>
+        <div class="resize-handle resize-corner resize-corner-tr" data-dir="ne"></div>
+        <div class="resize-handle resize-corner resize-corner-bl" data-dir="sw"></div>
+        <div class="resize-handle resize-corner resize-corner-br" data-dir="se"></div>
+    </div>
+
+    <!-- ========== NODE EDIT BUBBLE ========== -->
+    <div class="bubble-resize-wrapper hidden" id="node-edit-wrapper">
+        <div id="node-edit-bubble">
+            <div class="bubble-header" id="node-edit-header">
+                <input type="text" id="node-edit-title" class="node-title-input" placeholder="标题（≤10字）" maxlength="10">
+                <div class="bubble-header-actions">
+                    <div class="bubble-view-toggle">
+                        <button type="button" id="node-edit-preview-btn" class="bubble-view-btn"><i class="ph-bold ph-eye"></i></button>
+                        <button type="button" id="node-edit-raw-btn" class="bubble-view-btn"><i class="ph-bold ph-code"></i></button>
+                    </div>
+                    <button type="button" class="bubble-close" id="node-edit-close-btn" title="Close">&times;</button>
+                </div>
+            </div>
+            <div class="bubble-separator"></div>
+            <div class="bubble-content">
+                <textarea id="node-edit-textarea" class="node-content-textarea" placeholder="输入内容..."></textarea>
+                <div id="node-edit-preview" class="node-content-preview hidden"></div>
+            </div>
+            <div class="bubble-actions">
+                <button type="button" id="node-edit-delete-btn" class="destructive">Delete</button>
+                <button type="button" id="node-edit-cancel-btn" class="secondary">Cancel</button>
+                <button type="button" id="node-edit-save-btn" class="primary">Save</button>
+            </div>
+        </div>
+        <!-- Resize handles (4 edges + 4 corners) -->
+        <div class="resize-handle resize-edge-top" data-dir="n"></div>
+        <div class="resize-handle resize-edge-bottom" data-dir="s"></div>
+        <div class="resize-handle resize-edge-left" data-dir="w"></div>
+        <div class="resize-handle resize-edge-right" data-dir="e"></div>
+        <div class="resize-handle resize-corner resize-corner-tl" data-dir="nw"></div>
+        <div class="resize-handle resize-corner resize-corner-tr" data-dir="ne"></div>
+        <div class="resize-handle resize-corner resize-corner-bl" data-dir="sw"></div>
+        <div class="resize-handle resize-corner resize-corner-br" data-dir="se"></div>
+    </div>
+
+    <!-- ========== MINIMAP RIGHT-CLICK MENU ========== -->
+    <div id="mindmap-context-menu" class="context-menu hidden">
+        <button type="button" class="context-menu-item" data-action="add-left">
+            <i class="ph-bold ph-arrow-left"></i>
+            <span>添加左侧子节点</span>
+        </button>
+        <button type="button" class="context-menu-item" data-action="add-right">
+            <i class="ph-bold ph-arrow-right"></i>
+            <span>添加右侧子节点</span>
+        </button>
+        <div class="context-menu-separator"></div>
+        <button type="button" class="context-menu-item" data-action="edit">
+            <i class="ph-bold ph-pencil"></i>
+            <span>编辑</span>
+        </button>
+        <div class="context-menu-separator"></div>
+        <button type="button" class="context-menu-item destructive" data-action="delete">
+            <i class="ph-bold ph-trash"></i>
+            <span>删除</span>
+        </button>
+    </div>
+
+    <!-- ========== TOAST ========== -->
+    <div id="toast" class="hidden"></div>
+
+    <!-- ========== SHARE MODAL ========== -->
+    <div id="share-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Share Note</h2>
+            <div id="share-form">
+                <input type="text" id="share-address" placeholder="Enter user's Ethereum address">
+                <select id="share-permission">
+                    <option value="read">Read-Only</option>
+                    <option value="write">Read & Write</option>
+                </select>
+                <button type="button" id="add-collaborator-btn" class="primary">Add</button>
+            </div>
+            <div id="collaborators-list">
+                <h3>Collaborators</h3>
+                <div id="collaborators-container"></div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" id="close-modal-btn" class="secondary"><i class="ph-bold ph-x"></i> Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== CONFIRM DELETE MODAL ========== -->
+    <div id="confirm-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 400px;">
+            <h2>Delete Note?</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 8px; font-size: 0.9rem;">This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button type="button" id="confirm-cancel-btn" class="secondary">Cancel</button>
+                <button type="button" id="confirm-delete-btn" class="destructive">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== CREATE FOLDER MODAL ========== -->
+    <div id="create-folder-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 380px;">
+            <h2>Create Folder</h2>
+            <input type="text" id="folder-name-input" placeholder="Folder name" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem;">
+            <div class="modal-actions">
+                <button type="button" id="cancel-folder-btn" class="secondary">Cancel</button>
+                <button type="button" id="create-folder-submit-btn" class="primary">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./state.js"></script>
+    <script src="./utils.js"></script>
+    <script src="./constants.js"></script>
+    <script src="./dom.js"></script>
+    <script src="./modules/ai-fetch.js"></script>
+
+    <script src="./modules/notes-db.js"></script>
+    <script src="./modules/notes.js"></script>
+    <script src="./modules/batch.js"></script>
+    <script src="./modules/brainstorm.js"></script>
+    <script src="./modules/auth.js"></script>
+    <script src="./modules/settings.js"></script>
+    <script src="./modules/share.js"></script>
+    <script src="./modules/ui.js"></script>
+    <script src="./modules/mindmap-renderer.js"></script>
+    <script src="./modules/mindmap.js"></script>
+    <script type="module" src="./app.js"></script>
+</body>
+</html>
