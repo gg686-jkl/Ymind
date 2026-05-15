@@ -1,152 +1,77 @@
-# Ymind
+﻿# Ymind
 
-> 一个 HTML，零账户，无限脑洞。笔记和 AI 都在你手里，不在云上。去中心化就是你的隐私通行证。AI 陪你想，Ymind = Your Mind。
+Ymind 是一款无账户、去中心化的思维导图与笔记应用，内置 AI 头脑风暴功能。你的数据直接通过 IndexedDB 存储在浏览器本地。应用通过 P2P 协议进行同步，无需任何中心化服务器。身份验证完全基于 BIP39 助记词，支持通行密钥（Passkey）以及端到端加密（E2EE）。
 
-## 演示图
+## 核心亮点
 
-![登录页](images/login.png)
-![主页](images/main.png)
+### 自研 DAG 思维导图
+我们从零开发了定制的有向无环图（DAG）渲染引擎。
+* **DAG 数据模型**: 节点支持多父节点。这打破了传统树状结构的限制，能构建出复杂的知识图谱。
+* **双向 AI 扩展**: 在左侧扩展前置知识，在右侧深入分析特定主题。AI 将自动生成结构化的子节点。
+* **路径隔离悬停**: 鼠标悬浮在任何节点上时，利用“兄弟切割”算法，界面会自动让无关节点变暗，仅高亮相连路径。
+* **互动设计**: 支持节点左右两侧独立折叠、贝塞尔曲线连接、鼠标滚轮缩放及拖拽平移。
+* **撤销与重置**: 提供撤销 AI 扩展的后退按钮。你也可以根据子节点的上下文，让 AI 重新生成当前节点的内容。
 
-## 功能
-
-### 去中心化同步（GenosDB）
-- [GenosDB](https://github.com/estebanrfp/gdb) 让设备之间直接同步，走的 CRDT，不经过任何服务器
-- 笔记存在 IndexedDB 里，你的助记词就是加密钥匙
-- 通过 ACL 分享笔记：按地址给读写权限，给谁不给谁你说了算
-- 浏览器标签页之间实时同步，靠 GenosDB 的订阅 API
-- 加载一次就能离线用，网络恢复后自动补上
+### 去中心化同步
+Ymind 接入 GenosDB 实现无服务器的 P2P 同步机制。它支持完全离线使用，并在网络恢复后自动合并数据。你可以使用 ACL 共享机制，为不同地址设置独立的读写权限。
 
 ### AI 头脑风暴
-- 在笔记里打 `?`，按两下 `Enter`，`?` 前面的内容就是上下文，AI 直接回
-- `Ctrl+Enter` → 把上一个 `?` 到当前 `?` 的区域发给 AI
-- `Ctrl+S` → 打开历史面板，`←` `→` 翻看 AI 说过的
-- AI 输出存成隐藏笔记，用 `parentNoteId` 关联回父笔记
-- 任意 LLM 都能接：DeepSeek、OpenAI、Anthropic、Google Gemini……
+单端点接入超过 24 家 LLM 服务商（如 DeepSeek, OpenAI, Anthropic, Gemini 等）。在笔记中输入 `?` 并连按两次回车，即可在上下文中唤起 AI 响应。选中特定文本后按下 Ctrl+Enter，能让 AI 专注处理指定区域内容。所有回答均通过 SSE 实时流式传输，并自动保存为链接到父节点的隐藏笔记。
 
-### 基于身份的安全
-- 用助记词当身份（BIP39 词表）
-- 支持 Passkey 设备认证
-- 没有用户名密码，你的身份就是钥匙
-- API key 到不了浏览器（走 Vercel Edge Functions 代理）
+### 基于身份的安全机制
+助记词即是你的身份。API 密钥安全存放在 Worker 代理中，永远不会暴露给浏览器。你可以添加 WebAuthn 通行密钥，或者开启 20 万次迭代的 PBKDF2 端到端加密，享受极致的隐私保护。
 
-### 批量操作
-- 多选笔记，一次删除、导出或分享
-- 文件夹整理
+### Markdown 笔记
+支持全功能 Markdown 语法，配有同步滚动的实时预览窗口。你可以通过拖拽来整理文件夹树状结构。同时也支持批量多选、删除、导出及分享多篇笔记。
 
-## 键盘快捷键
+## 架构与技术栈
 
-| 快捷键 | 功能 |
-|--------|------|
-| `Enter` + `Enter` | 把文本（从上一个 `?` 到光标）发给 AI |
-| `Ctrl` + `Enter` | 把上一个区域的内容发给当前区域 |
-| `Ctrl` + `S` | 打开 AI 输出历史 |
-| `←` `→` | 历史面板打开时，翻看 AI 历史 |
+前端零框架、零构建步骤。应用完全基于原生 HTML, CSS 和 JS 运行。AI 代理层基于 Vercel Edge Functions（TypeScript）实现。
 
-## 使用方式
+* **前端**: 原生 JS, marked.js, Phosphor Icons
+* **数据库**: GenosDB (CRDT, P2P, WebRTC)
+* **后端/代理**: Vercel Edge Functions (TypeScript)
+* **加密**: Web Crypto API
 
-### 方式一：本地用（不带 AI）
+## 目录结构
 
-启动本地服务器，浏览器打开 Ymind.html 就行：
-
-```bash
-# 方法1: 使用 npx（需要 Node.js）
-npx serve .
-
-# 方法2: 使用 Python（需要 Python 3）
-python -m http.server 8080
-
-# 然后在浏览器中打开 http://localhost:5000（或 8080）
+```text
+src/
+├── index.html            主入口
+├── app.js                应用初始化 (ES module, 602 行)
+├── state.js              全局状态
+├── dom.js                DOM 引用缓存
+├── utils.js              加密与拖拽缩放工厂函数
+├── constants.js          布局常量与 ACL 角色
+├── style.css             全局样式 (1870 行)
+└── modules/
+    ├── auth.js            身份验证与 E2EE 重新初始化
+    ├── notes.js           笔记 CRUD 与文件夹树
+    ├── notes-db.js        响应式数据订阅
+    ├── batch.js           批量操作控制器
+    ├── brainstorm.js      AI 头脑风暴触发器
+    ├── ai-fetch.js        SSE 流式请求封装
+    ├── settings.js        设置面板
+    ├── share.js           ACL 协作共享
+    ├── ui.js              Markdown 预览与 Toast 提示
+    ├── mindmap.js         思维导图逻辑 (723 行)
+    └── mindmap-renderer.js  DAG 渲染引擎 (981 行)
+ymind-worker/             Vercel Edge Functions 代理
 ```
 
-### 方式二：开 AI 头脑风暴
+## 快捷键速查表
 
-#### 第 1 步：把 LLM 代理部署到 Vercel
+| 快捷键 | 动作 |
+|---|---|
+| Enter × 2 | 从上一个 `?` 触发 AI 头脑风暴 |
+| Ctrl+Enter | 针对选中区域触发 AI 头脑风暴 |
+| Ctrl+S | 打开 AI 历史记录面板 |
+| 左/右方向键 | 在历史面板中导航 |
+| Escape | 退出批量选择模式 |
 
-```bash
-cd ymind-worker
-vercel deploy --prod
-```
+## 运行指南
 
-Vercel 会给你一个地址，类似 `https://ymind-worker-xxx.vercel.app`。
+无需编译，直接运行前端。
 
-#### 第 2 步：添加环境变量
-
-```bash
-# 生成随机 token
-vercel env add WORKER_ACCESS_TOKEN
-# 输入: openssl rand -hex 32 的输出结果
-
-# 添加 DeepSeek API key
-vercel env add DEEPSEEK_API_KEY
-# 输入: 你的 DeepSeek API key
-
-# （可选）添加其他服务商的 API key
-vercel env add OPENAI_API_KEY
-vercel env add ANTHROPIC_API_KEY
-```
-
-#### 第 3 步：改 Ymind.html 里的 API_URL
-
-打开 Ymind.html，找到这行：
-
-```javascript
-const API_URL = '...';
-```
-
-改成你的 Vercel 地址：
-
-```javascript
-const API_URL = 'https://your-vercel-url.vercel.app/api/chat?key=YOUR_TOKEN';
-```
-
-#### 第 4 步：启动本地服务器
-
-```bash
-npx serve .   # 或 python -m http.server 8080
-```
-
-然后浏览器打开显示的地址就行（或者 `http://localhost:8080`）。
-
-### 用自定义域名
-
-#### 第 1 步：在 Vercel 添加域名
-
-```bash
-vercel domains add your-domain.com
-```
-
-#### 第 2 步：在域名管理后台加 DNS 记录
-
-Vercel 会告诉你要加什么记录（一般是 CNAME 或 A 记录），去你的域名管理后台配上就行。
-
-#### 第 3 步：改 Ymind.html 里的 API_URL
-
-```javascript
-const API_URL = 'https://your-domain.com/api/chat?key=YOUR_TOKEN';
-```
-
-### 安全说明
-
-为什么要走 Edge Functions 代理？
-
-- **API key 保护**：密钥只存在 Vercel 环境变量里，不会发给浏览器
-- **Token 认证**：请求要带 `?key=TOKEN`，有速率限制，防暴力破解
-- **速率限制**：每个 IP 每分钟最多 20 次请求，失败 3 次封 1 小时
-
-## 技术栈
-
-- **前端**：原生 HTML/CSS/JS（零框架）
-- **数据库**：[GenosDB](https://github.com/estebanrfp/gdb) - 带身份安全的 IndexedDB，支持点对点同步
-- **Markdown**：[marked.js](https://marked.js.org/)
-- **图标**：[Phosphor Icons](https://phosphoricons.com/)
-- **LLM 代理**：Vercel Edge Functions，TypeScript
-
-## 致谢
-
-- **[GenosDB](https://github.com/estebanrfp/gdb)** by Esteban Fuster Pozzi - 基于身份安全的 IndexedDB，支持 CRDT 同步和 ACL 系统。本项目基于 GenosDB 示例模板构建，借助其安全管理器实现助记词/Passkey 认证，利用其 map/subscribe API 实现响应式数据，并通过其点对点同步能力实现设备间同步。
-
-- **[marked.js](https://marked.js.org/)** - Markdown 解析
-
-- **[Phosphor Icons](https://phosphoricons.com/)** - 图标库
-
-- **[Vercel](https://vercel.com/)** - 用于安全 LLM 代理的 Edge Functions
+1. 在项目根目录运行 `npx serve .`。
+2. 要开启 AI 功能，请将 `ymind-worker` 目录部署到 Vercel。在 Vercel 中设置你的服务商 API 密钥环境变量。最后，在 `src/utils.js` 中将 `BRAINSTORM_WORKER_URL` 修改为你的专属 Worker 链接。
