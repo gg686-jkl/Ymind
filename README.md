@@ -37,33 +37,33 @@ The frontend uses zero frameworks and requires zero build steps. It runs on Vani
 
 ```text
 src/
-©À©¤©¤ index.html            Main entry
-©À©¤©¤ app.js                App init (ES module, 602 lines)
-©À©¤©¤ state.js              Global state
-©À©¤©¤ dom.js                DOM ref cache
-©À©¤©¤ utils.js              Crypto, drag/resize factory
-©À©¤©¤ constants.js          Layout, ACL roles
-©À©¤©¤ style.css             All styles (1870 lines)
-©¸©¤©¤ modules/
-    ©À©¤©¤ auth.js            Auth + E2EE reinit
-    ©À©¤©¤ notes.js           Note CRUD + folder tree
-    ©À©¤©¤ notes-db.js        Reactive subscriptions
-    ©À©¤©¤ batch.js           Batch selector
-    ©À©¤©¤ brainstorm.js      AI brainstorm trigger
-    ©À©¤©¤ ai-fetch.js        SSE streaming wrapper
-    ©À©¤©¤ settings.js        Settings panel
-    ©À©¤©¤ share.js           ACL collaboration
-    ©À©¤©¤ ui.js              Markdown preview + toast
-    ©À©¤©¤ mindmap.js         Mindmap logic (723 lines)
-    ©¸©¤©¤ mindmap-renderer.js  DAG renderer (981 lines)
-ymind-worker/             Vercel Edge Functions
+    index.html            Main entry
+    app.js                App init (ES module, 602 lines)
+    state.js              Global state
+    dom.js                DOM ref cache
+    utils.js              Crypto, drag/resize factory
+    constants.js          Layout, ACL roles
+    style.css             All styles (1870 lines)
+    modules/
+        auth.js            Auth + E2EE reinit
+        notes.js           Note CRUD + folder tree
+        notes-db.js        Reactive subscriptions
+        batch.js           Batch selector
+        brainstorm.js      AI brainstorm trigger
+        ai-fetch.js        SSE streaming wrapper
+        settings.js        Settings panel
+        share.js           ACL collaboration
+        ui.js              Markdown preview + toast
+        mindmap.js         Mindmap logic (723 lines)
+        mindmap-renderer.js  DAG renderer (981 lines)
+    ymind-worker/         Vercel Edge Functions
 ```
 
 ## Keyboard Shortcuts
 
 | Shortcut | Action |
 |---|---|
-| Enter ¡Á 2 | Trigger AI brainstorm from last `?` |
+| Enter Ã— 2 | Trigger AI brainstorm from last `?` |
 | Ctrl+Enter | Trigger AI brainstorm on specific region |
 | Ctrl+S | Open AI history |
 | Left/Right Arrow | Navigate chat history |
