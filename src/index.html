@@ -300,20 +300,13 @@
             </button>
             <div class="settings-section-body hidden">
                 <div class="settings-row">
-                    <span class="settings-label">Left Expand (前置知识)</span>
-                    <textarea class="settings-textarea" id="mindmap-left-preprompt" rows="4" placeholder="AI 扩展左侧节点时的系统提示词..."></textarea>
+                    <button type="button" class="mindmap-prompt-edit-btn" data-prompt="left">Left Expand (前置知识)</button>
                 </div>
                 <div class="settings-row">
-                    <span class="settings-label">Right Expand (深入探索)</span>
-                    <textarea class="settings-textarea" id="mindmap-right-preprompt" rows="4" placeholder="AI 扩展右侧节点时的系统提示词..."></textarea>
+                    <button type="button" class="mindmap-prompt-edit-btn" data-prompt="right">Right Expand (深入探索)</button>
                 </div>
                 <div class="settings-row">
-                    <span class="settings-label">Reset Node (节点重置)</span>
-                    <textarea class="settings-textarea" id="mindmap-reset-preprompt" rows="4" placeholder="AI 重新生成节点内容时的系统提示词..."></textarea>
-                </div>
-                <div class="settings-row" style="justify-content: flex-end; gap: 8px;">
-                    <button type="button" id="mindmap-prompt-cancel" class="secondary">Cancel</button>
-                    <button type="button" id="mindmap-prompt-save" class="primary">Save</button>
+                    <button type="button" class="mindmap-prompt-edit-btn" data-prompt="reset">Reset Node (节点重置)</button>
                 </div>
             </div>
         </div>
@@ -504,6 +497,7 @@
         </div>
     </div>
 
+    <script src="./config.js"></script>
     <script src="./state.js"></script>
     <script src="./utils.js"></script>
     <script src="./constants.js"></script>

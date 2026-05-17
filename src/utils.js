@@ -1,7 +1,7 @@
-/* ========== Config ========== */
+/* ========== Helper Utilities ========== */
 
-// Brainstorm config - Worker URL
-const BRAINSTORM_WORKER_URL = (window.APP_CONFIG && window.APP_CONFIG.BRAINSTORM_WORKER_URL) || 'https://api.ymind.top/api/chat?key=YOUR_WORKER_ACCESS_TOKEN';
+// Brainstorm config - references config.js (loaded before this script)
+const BRAINSTORM_WORKER_URL = CONFIG.BRAINSTORM_WORKER_URL;
 
 /* ========== Helper Utilities ========== */
 function on(el, event, handler, options) {
@@ -35,11 +35,11 @@ function setJsonItem(key, value) {
 
 /** Derive a deterministic room name from a mnemonic phrase using PBKDF2 */
 async function deriveRoomName(mnemonic) {
-    const salt = 'ymind-room-salt';
+    const salt = CONFIG.CRYPTO.ROOM_SALT;
     const enc = new TextEncoder();
     const key = await crypto.subtle.importKey('raw', enc.encode(mnemonic), 'PBKDF2', false, ['deriveBits']);
     const bits = await crypto.subtle.deriveBits(
-        { name: 'PBKDF2', salt: enc.encode(salt), iterations: 100000, hash: 'SHA-256' },
+        { name: 'PBKDF2', salt: enc.encode(salt), iterations: CONFIG.CRYPTO.ROOM_ITERATIONS, hash: 'SHA-256' },
         key, 256
     );
     const base64 = btoa(String.fromCharCode(...new Uint8Array(bits)));
@@ -48,11 +48,11 @@ async function deriveRoomName(mnemonic) {
 
 /** Derive E2EE password from mnemonic using a different salt than room name */
 async function deriveE2EEPassword(mnemonic) {
-    const salt = 'ymind-e2ee-salt';
+    const salt = CONFIG.CRYPTO.E2EE_SALT;
     const enc = new TextEncoder();
     const key = await crypto.subtle.importKey('raw', enc.encode(mnemonic), 'PBKDF2', false, ['deriveBits']);
     const bits = await crypto.subtle.deriveBits(
-        { name: 'PBKDF2', salt: enc.encode(salt), iterations: 200000, hash: 'SHA-256' },
+        { name: 'PBKDF2', salt: enc.encode(salt), iterations: CONFIG.CRYPTO.E2EE_ITERATIONS, hash: 'SHA-256' },
         key, 512
     );
     return btoa(String.fromCharCode(...new Uint8Array(bits))).replace(/[^a-zA-Z0-9]/g, '');
@@ -60,11 +60,11 @@ async function deriveE2EEPassword(mnemonic) {
 
 /* ========== E2EE Preference Management ========== */
 async function hashMnemonic(mnemonic) {
-    const salt = 'ymind-pref-salt';
+    const salt = CONFIG.CRYPTO.PREF_SALT;
     const enc = new TextEncoder();
     const key = await crypto.subtle.importKey('raw', enc.encode(mnemonic), 'PBKDF2', false, ['deriveBits']);
     const bits = await crypto.subtle.deriveBits(
-        { name: 'PBKDF2', salt: enc.encode(salt), iterations: 10000, hash: 'SHA-256' },
+        { name: 'PBKDF2', salt: enc.encode(salt), iterations: CONFIG.CRYPTO.PREF_ITERATIONS, hash: 'SHA-256' },
         key, 128
     );
     return btoa(String.fromCharCode(...new Uint8Array(bits)));

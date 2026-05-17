@@ -3,14 +3,7 @@ const settingsBtn = dom.settingsBtn;
 const settingsPopover = dom.settingsPopover;
 let listeningShortcutsActive = false;
 
-const DEFAULT_SHORTCUTS = {
-    brainstormDoubleEnter: { key: 'Enter', ctrl: false, count: 2, delay: 500, description: 'Double Enter (brainstorm)' },
-    brainstormCtrlEnter:   { key: 'Enter', ctrl: true, description: 'Ctrl+Enter (region)' },
-    openAiHistory:          { key: 's', ctrl: true, description: 'Ctrl+S (open AI history)' },
-    exitBatchMode:         { key: 'Escape', description: 'Escape (exit batch)' },
-    navigateAiPrev:        { key: 'ArrowLeft', description: 'Arrow Left (prev AI)' },
-    navigateAiNext:        { key: 'ArrowRight', description: 'Arrow Right (next AI)' },
-};
+const DEFAULT_SHORTCUTS = CONFIG.DEFAULT_SHORTCUTS;
 
 function loadShortcuts() {
     const parsed = getJsonItem('ymind_shortcuts', null);
@@ -29,7 +22,7 @@ function saveShortcuts(shortcuts) {
 }
 
 function loadSeparator() {
-    return localStorage.getItem('ymind_separator') || '?';
+    return localStorage.getItem('ymind_separator') || CONFIG.DEFAULT_SEPARATOR;
 }
 
 function saveSeparator(sep) {
@@ -132,10 +125,10 @@ function loadSettingsValues() {
     }
     const sepInput = dom.settingsSeparatorInput;
     if (sepInput) sepInput.value = loadSeparator();
-    const mindmapLeft = document.getElementById('mindmap-left-preprompt');
-    const mindmapRight = document.getElementById('mindmap-right-preprompt');
-    if (mindmapLeft) mindmapLeft.value = loadMindmapLeftPrePrompt();
-    if (mindmapRight) mindmapRight.value = loadMindmapRightPrePrompt();
+    // Pre-fill mindmap prompt defaults if localStorage is empty
+    if (!loadMindmapLeftPrePrompt()) { saveMindmapLeftPrePrompt(getDefaultLeftPrePrompt()); }
+    if (!loadMindmapRightPrePrompt()) { saveMindmapRightPrePrompt(getDefaultRightPrePrompt()); }
+    if (!loadMindmapResetPrePrompt()) { saveMindmapResetPrePrompt(getDefaultResetPrePrompt()); }
 }
 
 on(document, 'click', (e) => {
@@ -235,11 +228,30 @@ function openPrepromptBubble() {
 }
 
 function closePrepromptBubble() {
+    editingMindmapPrompt = null;
     prepromptBubbleWrapper.classList.add('hidden');
+    var titleSpan = prepromptBubbleHeader.querySelector('.bubble-title');
+    if (titleSpan) titleSpan.innerHTML = '<i class="ph-bold ph-textbox"></i> Pre-prompt';
 }
 
 function confirmPrepromptBubble() {
-    const text = prepromptBubbleTextarea.value;
+    var text = prepromptBubbleTextarea.value;
+    if (editingMindmapPrompt) {
+        if (editingMindmapPrompt === 'left') {
+            saveMindmapLeftPrePrompt(text);
+            mindmapLeftPrePrompt = text;
+        } else if (editingMindmapPrompt === 'right') {
+            saveMindmapRightPrePrompt(text);
+            mindmapRightPrePrompt = text;
+        } else if (editingMindmapPrompt === 'reset') {
+            saveMindmapResetPrePrompt(text);
+            mindmapResetPrePrompt = text;
+        }
+        editingMindmapPrompt = null;
+        closePrepromptBubble();
+        showToast('Mindmap prompt saved');
+        return;
+    }
     savePrePrompt(text);
     closePrepromptBubble();
     showToast('Pre-prompt saved');
@@ -248,39 +260,29 @@ function confirmPrepromptBubble() {
 on(prepromptBubbleCancel, 'click', closePrepromptBubble);
 on(prepromptBubbleConfirm, 'click', confirmPrepromptBubble);
 
-/* --- Mindmap Prompt Section --- */
-const mindmapLeftTextarea = document.getElementById('mindmap-left-preprompt');
-const mindmapRightTextarea = document.getElementById('mindmap-right-preprompt');
-const mindmapResetTextarea = document.getElementById('mindmap-reset-preprompt');
-const mindmapPromptCancel = document.getElementById('mindmap-prompt-cancel');
-const mindmapPromptSave = document.getElementById('mindmap-prompt-save');
+/* --- Mindmap Prompt Section (bubble editing) --- */
+var editingMindmapPrompt = null;
 
-if (mindmapLeftTextarea && mindmapRightTextarea) {
-    mindmapLeftTextarea.value = loadMindmapLeftPrePrompt();
-    mindmapRightTextarea.value = loadMindmapRightPrePrompt();
-    if (mindmapResetTextarea) {
-        mindmapResetTextarea.value = loadMindmapResetPrePrompt();
+on(document, 'click', (e) => {
+    var btn = e.target.closest('.mindmap-prompt-edit-btn');
+    if (!btn) return;
+    e.stopPropagation();
+    editingMindmapPrompt = btn.dataset.prompt;
+    var promptValue = '';
+    var titleHtml = '';
+    if (editingMindmapPrompt === 'left') {
+        promptValue = loadMindmapLeftPrePrompt();
+        titleHtml = '<i class="ph-bold ph-textbox"></i> Left Expand Prompt';
+    } else if (editingMindmapPrompt === 'right') {
+        promptValue = loadMindmapRightPrePrompt();
+        titleHtml = '<i class="ph-bold ph-textbox"></i> Right Expand Prompt';
+    } else if (editingMindmapPrompt === 'reset') {
+        promptValue = loadMindmapResetPrePrompt();
+        titleHtml = '<i class="ph-bold ph-textbox"></i> Reset Prompt';
     }
-
-    on(mindmapPromptSave, 'click', () => {
-        saveMindmapLeftPrePrompt(mindmapLeftTextarea.value);
-        saveMindmapRightPrePrompt(mindmapRightTextarea.value);
-        if (mindmapResetTextarea) {
-            saveMindmapResetPrePrompt(mindmapResetTextarea.value);
-            mindmapResetPrePrompt = mindmapResetTextarea.value;
-        }
-        mindmapLeftPrePrompt = mindmapLeftTextarea.value;
-        mindmapRightPrePrompt = mindmapRightTextarea.value;
-        const settingsPopover = dom.settingsPopover;
-        settingsPopover.classList.add('hidden');
-        showToast('Mindmap prompts saved');
-    });
-
-    on(mindmapPromptCancel, 'click', () => {
-        mindmapLeftTextarea.value = loadMindmapLeftPrePrompt();
-        mindmapRightTextarea.value = loadMindmapRightPrePrompt();
-        if (mindmapResetTextarea) {
-            mindmapResetTextarea.value = loadMindmapResetPrePrompt();
-        }
-    });
-}
+    var titleSpan = prepromptBubbleHeader.querySelector('.bubble-title');
+    if (titleSpan) titleSpan.innerHTML = titleHtml;
+    prepromptBubbleTextarea.value = promptValue;
+    prepromptBubbleWrapper.classList.remove('hidden');
+    prepromptBubbleTextarea.focus();
+});

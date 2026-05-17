@@ -820,7 +820,13 @@ function initMindmapRenderer(containerEl, options) {
         _history: [],
         _historyIdx: -1,
         _centerX: DEFAULT_CENTER_X,
-        _centerY: DEFAULT_CENTER_Y
+        _centerY: DEFAULT_CENTER_Y,
+        _isDragging: false,
+        _dragNodeId: null,
+        _dragStartX: 0,
+        _dragStartY: 0,
+        _dragNodeStartX: 0,
+        _dragNodeStartY: 0
     };
 
     containerEl.innerHTML = '';
@@ -883,7 +889,75 @@ function initMindmapRenderer(containerEl, options) {
         if (mindmapState && mindmapState.onNodeContextMenu) mindmapState.onNodeContextMenu(nodeId, e);
     });
 
+    nodesDiv.addEventListener('mousedown', function(e) {
+        if (!e.shiftKey) return;
+        var nodeEl = e.target.closest('.mm-node');
+        if (!nodeEl) return;
+        if (e.target.closest('.mm-collapse')) return;
+        e.preventDefault();
+        var nodeId = nodeEl.getAttribute('data-node-id');
+        var node = mindmapState.nodes[nodeId];
+        if (!node) return;
+        mindmapState._isDragging = true;
+        mindmapState._dragNodeId = nodeId;
+        mindmapState._dragStartX = e.clientX;
+        mindmapState._dragStartY = e.clientY;
+        mindmapState._dragNodeStartX = node._x;
+        mindmapState._dragNodeStartY = node._y;
+        nodeEl.classList.add('dragging');
+    });
+
     setupZoomPan(state);
+
+    state._dragMoveHandler = function(e) {
+        if (!mindmapState._isDragging || !mindmapState._dragNodeId) return;
+        var node = mindmapState.nodes[mindmapState._dragNodeId];
+        if (!node) return;
+        var t = mindmapState._getTransform();
+        var dx = (e.clientX - mindmapState._dragStartX) / t.scale;
+        var dy = (e.clientY - mindmapState._dragStartY) / t.scale;
+        var newX = mindmapState._dragNodeStartX + dx;
+        var newY = mindmapState._dragNodeStartY + dy;
+        var cw = mindmapState.container.clientWidth / t.scale;
+        var ch = mindmapState.container.clientHeight / t.scale;
+        newX = Math.max(0, Math.min(newX, cw - (node._width || 60)));
+        newY = Math.max(0, Math.min(newY, ch - (node._height || 36)));
+        node._x = newX;
+        node._y = newY;
+        node._el.style.left = newX + 'px';
+        node._el.style.top = newY + 'px';
+    };
+    window.addEventListener('mousemove', state._dragMoveHandler);
+
+    state._dragUpHandler = function() {
+        if (!mindmapState._isDragging) return;
+        var nodeId = mindmapState._dragNodeId;
+        var node = nodeId ? mindmapState.nodes[nodeId] : null;
+        if (node && node._el) node._el.classList.remove('dragging');
+        mindmapState._isDragging = false;
+        mindmapState._dragNodeId = null;
+        if (nodeId) {
+            renderAll(mindmapState);
+            if (mindmapState.onNodeDragEnd) mindmapState.onNodeDragEnd();
+        }
+    };
+    window.addEventListener('mouseup', state._dragUpHandler);
+
+    state._dragEscapeHandler = function(e) {
+        if (e.key === 'Escape' && mindmapState._isDragging) {
+            var node = mindmapState.nodes[mindmapState._dragNodeId];
+            if (node) {
+                node._x = mindmapState._dragNodeStartX;
+                node._y = mindmapState._dragNodeStartY;
+                node._el.style.left = mindmapState._dragNodeStartX + 'px';
+                node._el.style.top = mindmapState._dragNodeStartY + 'px';
+                node._el.classList.remove('dragging');
+            }
+            mindmapState._isDragging = false;
+            mindmapState._dragNodeId = null;
+        }
+    };
+    window.addEventListener('keydown', state._dragEscapeHandler);
 
     containerEl.addEventListener('mouseleave', function () {
         containerEl.classList.remove('mm-hover');
@@ -976,6 +1050,9 @@ function destroyMindmapRenderer() {
     if (mindmapState) {
         if (mindmapState._zoomMoveHandler) window.removeEventListener('mousemove', mindmapState._zoomMoveHandler);
         if (mindmapState._zoomUpHandler) window.removeEventListener('mouseup', mindmapState._zoomUpHandler);
+        if (mindmapState._dragMoveHandler) window.removeEventListener('mousemove', mindmapState._dragMoveHandler);
+        if (mindmapState._dragUpHandler) window.removeEventListener('mouseup', mindmapState._dragUpHandler);
+        if (mindmapState._dragEscapeHandler) window.removeEventListener('keydown', mindmapState._dragEscapeHandler);
     }
     mindmapState = null;
 }

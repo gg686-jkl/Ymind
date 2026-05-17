@@ -34,15 +34,19 @@ async function createNewMindmap() {
 }
 
 function loadMindmapNodeData(dataValue) {
+    var nodes;
     if (dataValue.nodes) {
-        return JSON.parse(JSON.stringify(dataValue.nodes));
+        nodes = JSON.parse(JSON.stringify(dataValue.nodes));
+    } else if (dataValue.root) {
+        nodes = migrateOldRootToNodes(dataValue.root);
+    } else {
+        nodes = {};
+        var rootData = defaultNodeData();
+        nodes[rootData.id] = rootData;
     }
-    if (dataValue.root) {
-        return migrateOldRootToNodes(dataValue.root);
+    for (var id in nodes) {
+        nodes[id]._el = null;
     }
-    var rootData = defaultNodeData();
-    var nodes = {};
-    nodes[rootData.id] = rootData;
     return nodes;
 }
 
@@ -187,6 +191,9 @@ function bootMindmapRenderer(nodes) {
         },
         onReset: function (id) {
             resetNodeContent(id);
+        },
+        onNodeDragEnd: function () {
+            saveMindmap();
         }
     });
 
@@ -414,14 +421,14 @@ function getDefaultResetPrePrompt() {
     return `你是一个AI知识整合助手。用户需要你重写一个知识节点的内容，使其与上下游知识点更加自洽和连贯。
 
 要求：
-1. 根据提供的子节点内容，重新生成节点的标题(topic)和内容(content)
-2. topic: 简短标题（≤10字），中文字
+1. 根据提供的子节点内容，重新生成一个节点的标题(topic)和内容(content)
+2. topic: 简短标题（≤20字），中文字
 3. content: 详细解释，综合子节点内容，提炼核心概念
 4. 只返回JSON对象格式，包含 topic 和 content 两个字段，不要其他内容
 5. 不要添加解释或其他文字
 
 示例返回：
-{"topic":"概率论基础","content":"概率论是研究随机现象数量规律的数学分支，核心概念包括样本空间、事件、概率公理等。"}`;
+{"topic":"概率论基础","content":"..."}`;
 }
 
 async function resetNodeContent(nodeId) {
@@ -470,9 +477,9 @@ function getDefaultLeftPrePrompt() {
     return `你是一个AI学习助手。用户正在学习某个知识点，你需要帮助他们补充前置知识。
 
 要求：
-1. 返回2-4个必要的前置知识点
+1. 根据需要返回必要的前置知识点
 2. 每个知识点包含：
-   - topic: 简短标题（≤10字）
+   - topic: 简短标题（≤20字），中文字
    - content: 简要说明（1-2段）
 3. 只返回JSON数组格式，不要其他内容
 4. topic使用中文，content使用中文
@@ -480,8 +487,8 @@ function getDefaultLeftPrePrompt() {
 
 示例返回：
 [
-  {"topic":"概率基础","content":"概率论的基本概念，包括事件、样本空间、概率公理等。"},
-  {"topic":"随机变量","content":"随机变量的定义、离散和连续随机变量的区别。"}
+  {"topic":"概率基础","content":"..."},
+  {"topic":"随机变量","content":"..."}
 ]`;
 }
 
@@ -489,9 +496,9 @@ function getDefaultRightPrePrompt() {
     return `你是一个AI学习助手。用户正在学习某个知识点，你需要帮助他们深入探索。
 
 要求：
-1. 返回3-5个深入学习的子主题
+1. 根据需要返回深入学习的子主题
 2. 每个子主题包含：
-   - topic: 简短标题（≤10字）
+   - topic: 简短标题（≤20字），中文字
    - content: 详细解释（1-2段）
 3. 只返回JSON数组格式，不要其他内容
 4. topic使用中文，content使用中文
@@ -499,8 +506,8 @@ function getDefaultRightPrePrompt() {
 
 示例返回：
 [
-  {"topic":"联合分布","content":"联合分布描述多个随机变量同时取值的概率规律..."},
-  {"topic":"边缘分布","content":"边缘分布是从联合分布中通过求和或积分得到的单个变量的分布..."}
+  {"topic":"联合分布","content":"..."},
+  {"topic":"边缘分布","content":"..."}
 ]`;
 }
 

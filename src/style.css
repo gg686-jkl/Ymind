@@ -1100,6 +1100,25 @@
             box-shadow: 0 0 0 2px var(--accent-blue-ring);
         }
 
+        .mindmap-prompt-edit-btn {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            text-align: left;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .mindmap-prompt-edit-btn:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 1px var(--accent-blue-ring);
+        }
+
         /* ========== Preprompt Bubble ========== */
         .preprompt-bubble-wrapper {
             position: fixed;
@@ -1624,7 +1643,7 @@
   background: var(--bg-secondary, #fff);
   border: 2px solid var(--text-primary, #333);
   border-radius: 8px;
-  cursor: pointer;
+  cursor: grab;
   user-select: none;
   z-index: 2;
   padding: 0 6px;
@@ -1632,6 +1651,11 @@
 }
 .mm-node:hover {
   box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.mm-node.dragging {
+  cursor: grabbing;
+  z-index: 999;
+  transition: none;
 }
 .mm-node.selected {
   outline: 2px solid var(--accent-primary, #4dc4ff);
