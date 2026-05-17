@@ -4,7 +4,7 @@ Ymind is a zero-account, decentralized mindmap and notes application featuring A
 
 ## Key Features
 
-### Custom DAG Mindmap
+### Custom DAG Mindmap--A New Paradigm For AI Interaction
 We built a custom Directed Acyclic Graph renderer from scratch. 
 * **DAG Data Model**: Nodes can have multiple parents. This creates complex knowledge graphs instead of simple trees.
 * **Bidirectional AI Expansion**: Expand left for prerequisite knowledge or right for deep-dive topics. The AI generates structured child nodes.
